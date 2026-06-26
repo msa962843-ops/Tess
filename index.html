@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="referrer" content="no-referrer">
-    <title>File Viewer & Player</title>
+       <title>File Viewer & Player</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
@@ -41,9 +41,6 @@
     </footer>
 
     <script>
-        // ====================================================================
-        // TEKNIK PENYELAMATAN GLOBAL VARIABLE SEBELUM DI-OBFUSCATE
-        // ====================================================================
         var globalSupa = null;
         try {
             if (typeof window !== 'undefined' && window.supabase) {
@@ -59,7 +56,6 @@
         var document = window.document || { getElementById: function() { return null; }, createElement: function() { return {}; }, addEventListener: function() {} };
         var sessionStorage = window.sessionStorage || { getItem: function() { return null; }, removeItem: function() {}, setItem: function() {} };
 
-        // ROUTER BYPASS (SUPORT /slug DAN /d/slug)
         let currentLoc = window["location"] ? window["location"] : { pathname: "", search: "", href: "" };
         let targetPath = currentLoc["pathname"] || "";
         
@@ -94,16 +90,13 @@
             videoSlug = videoSlug["replace"]('.html', '');
         }
 
-        // KONFIGURASI UTAMA SERVER SUPABASE
         const SUPABASE_URL = "https://ehhrvswzhirrnrqxmxae.supabase.co"; 
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVoaHJ2c3d6aGlycm5ycXhteGFlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAyMjg2NDcsImV4cCI6MjA5NTgwNDY0N30.75vZs3Rn6j7YSlInHpGDN39OGjhywcEBv8j-hawyOlY";
 
-        // Menggunakan inisialisasi selamat daripada objek globalSupa terpelihara
         const supabaseClient = (globalSupa && typeof globalSupa["createClient"] === 'function') 
             ? globalSupa["createClient"](SUPABASE_URL, SUPABASE_ANON_KEY) 
             : null;
 
-        // ELEMEN UI DOM
         const folderTitleDisplay = document["getElementById"]('folder-title-display');
         const folderDate = document["getElementById"]('folder-date');
         const filesFeedContainer = document["getElementById"]('files-feed-container');
@@ -113,7 +106,6 @@
         let videoUrlsCache = {};
         const DOWNLOAD_REDIRECT_URL = "https://braverybreezebinding.com/dyu6kzr44?key=703bc4908bfdd21b148e4fe03f9810cb";
 
-        // PROTEKSI KEY DOWN
         document["addEventListener"]('keydown', function(e) {
             if (e["key"] === 'F12' || (e["ctrlKey"] && e["shiftKey"] && (e["key"] === 'I' || e["key"] === 'J' || e["key"] === 'C')) || (e["ctrlKey"] && e["key"] === 'u')) {
                 e["preventDefault"]();
@@ -121,7 +113,6 @@
             }
         });
 
-        // FUNGSI INJEKSI IKLAN MURNI JAVASCRIPT
         function pasangIklanStickyAtas() {
             const wadah = document["getElementById"]('wadah-iklan-sticky-atas');
             if (!wadah) return;
@@ -144,13 +135,12 @@
             wadah["appendChild"](inner); wadah["appendChild"](script); parent["appendChild"](wadah);
         }
 
-        // LOGIKA FETCH DATA DARI SUPABASE
         async function loadGofileFeed() {
             if (!folderTitleDisplay || !filesFeedContainer) return;
             
             if (!supabaseClient) {
                 folderTitleDisplay["textContent"] = "Error: Hubungan Server Terputus";
-                filesFeedContainer["innerHTML"] = "<p class=\"text-red-400 text-xs text-center py-4\">Gagal mengambil modul database. Pastikan Javascript diaktifkan atau gunakan versi bypass.</p>";
+                filesFeedContainer["innerHTML"] = "<p class=\"text-red-400 text-xs text-center py-4\">Gagal mengambil modul database.</p>";
                 return;
             }
 
@@ -201,7 +191,9 @@
 
                     const card = document["createElement"]('div');
                     card["className"] = "py-4 flex flex-col w-full";
-                    card["innerHTML"] = "<div class=\"flex items-start justify-between w-full gap-3\"><div class=\"flex items-center gap-2 flex-shrink-0 mt-1\"><input type=\"checkbox\" class=\"w-3.5 h-3.5 rounded bg-gray-900 border-gray-700 text-blue-600 focus:ring-0 cursor-pointer\"><span class=\"text-blue-500 text-base\"><i class=\"fa-solid fa-file-video\"></i></span></div><div class=\"flex-1 min-w-0 flex flex-col\"><div class=\"mb-3\"><h3 class=\"text-xs font-semibold text-gray-200 tracking-wide break-all line-clamp-1\">" + fileName + "</h3><p class=\"text-[10px] text-gray-500 mt-0.5\">" + itemDateStr + "</p><p class=\"text-[10px] text-gray-500\">" + fakeSize + "</p><p class=\"text-[10px] text-gray-500\">" + fakeDownloads["toLocaleString"]('id-ID') + " downloads</p></div><div id=\"mini-viewport-" + item["id"] + "\" onclick=\"handleThumbnailClick(event, '" + item["id"] + "', '" + fileName + "')\" class=\"w-full max-w-[280px] sm:max-w-[320px] aspect-video rounded-lg bg-black border border-gray-800/80 flex items-center justify-center relative overflow-hidden cursor-pointer hover:opacity-90 hover:border-gray-700 transition-all duration-150 shadow-md\" style=\"display: block;\">" + renderThumbnailPlayer(fullUrl) + "</div></div><div class=\"flex items-center gap-1.5 flex-shrink-0 mt-1\"><button type=\"button\" id=\"play-btn-" + item["id"] + "\" data-status=\"paused\" onclick=\"handleButtonClick(event, '" + item["id"] + "', '" + fileName + "')\" class=\"w-8 h-8 rounded bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-700/80 flex items-center justify-center text-xs\" title=\"Play Video\"><i class=\"fa-solid fa-play\"></i></button><a href=\"" + DOWNLOAD_REDIRECT_URL + "\" target=\"_blank\" class=\"w-8 h-8 rounded bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-700/80 flex items-center justify-center text-xs\" title=\"Download\"><i class=\"fa-solid fa-download\"></i></a><button type=\"button\" class=\"w-8 h-8 rounded bg-gray-800 hover:bg-gray-700 text-gray-400 border border-gray-700/80 flex items-center justify-center text-xs\"><i class=\"fa-solid fa-ellipsis-vertical\"></i></button></div></div><div id=\"expanded-zone-" + item["id"] + "\" class=\"w-full hidden mt-3 bg-black border border-gray-800 shadow-2xl rounded-lg overflow-hidden flex justify-center items-center h-auto\"></div>";
+                    
+                    // PERUBAHAN UTAMA: Menghapus aspect-video tetap, menggantinya dengan max-w adaptif & h-auto
+                    card["innerHTML"] = "<div class=\"flex items-start justify-between w-full gap-3\"><div class=\"flex items-center gap-2 flex-shrink-0 mt-1\"><input type=\"checkbox\" class=\"w-3.5 h-3.5 rounded bg-gray-900 border-gray-700 text-blue-600 focus:ring-0 cursor-pointer\"><span class=\"text-blue-500 text-base\"><i class=\"fa-solid fa-file-video\"></i></span></div><div class=\"flex-1 min-w-0 flex flex-col\"><div class=\"mb-3\"><h3 class=\"text-xs font-semibold text-gray-200 tracking-wide break-all line-clamp-1\">" + fileName + "</h3><p class=\"text-[10px] text-gray-500 mt-0.5\">" + itemDateStr + "</p><p class=\"text-[10px] text-gray-500\">" + fakeSize + "</p><p class=\"text-[10px] text-gray-500\">" + fakeDownloads["toLocaleString"]('id-ID') + " downloads</p></div><div id=\"mini-viewport-" + item["id"] + "\" onclick=\"handleThumbnailClick(event, '" + item["id"] + "', '" + fileName + "')\" class=\"w-full max-w-[240px] sm:max-w-[280px] h-auto rounded-lg bg-black border border-gray-800/80 flex items-center justify-center relative overflow-hidden cursor-pointer hover:opacity-90 hover:border-gray-700 transition-all duration-150 shadow-md\" style=\"display: block;\">" + renderThumbnailPlayer(fullUrl) + "</div></div><div class=\"flex items-center gap-1.5 flex-shrink-0 mt-1\"><button type=\"button\" id=\"play-btn-" + item["id"] + "\" data-status=\"paused\" onclick=\"handleButtonClick(event, '" + item["id"] + "', '" + fileName + "')\" class=\"w-8 h-8 rounded bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-700/80 flex items-center justify-center text-xs\" title=\"Play Video\"><i class=\"fa-solid fa-play\"></i></button><a href=\"" + DOWNLOAD_REDIRECT_URL + "\" target=\"_blank\" class=\"w-8 h-8 rounded bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-700/80 flex items-center justify-center text-xs\" title=\"Download\"><i class=\"fa-solid fa-download\"></i></a><button type=\"button\" class=\"w-8 h-8 rounded bg-gray-800 hover:bg-gray-700 text-gray-400 border border-gray-700/80 flex items-center justify-center text-xs\"><i class=\"fa-solid fa-ellipsis-vertical\"></i></button></div></div><div id=\"expanded-zone-" + item["id"] + "\" class=\"w-full hidden mt-3 bg-black border border-gray-800 shadow-2xl rounded-lg overflow-hidden flex justify-center items-center h-auto\"></div>";
                     filesFeedContainer["appendChild"](card);
 
                     if (index === 0) suntikIklanKontainer(filesFeedContainer, "container-93737c813e604544d6d8768c743712d8", "https://braverybreezebinding.com/93737c813e604544d6d8768c743712d8/invoke.js");
@@ -210,16 +202,19 @@
             } catch (err) { console["error"](err); if (folderTitleDisplay) folderTitleDisplay["textContent"] = "Error Jaringan"; }
         }
 
+        // FUNGSI UTAMA UNTUK MERENDER THUMBNAIL RESPONSIVE BEBAS DISTORSI
         function renderThumbnailPlayer(url) {
             if (url["match"](/\.(mp4|webm|ogg)/i) || url["includes"]('supabase.co/storage')) {
                 const thumbnailUrl = url["includes"]('#t=') ? url : url + "#t=5";
-                return "<video preload=\"metadata\" muted playsinline oncontextmenu=\"return false;\" class=\"w-full h-full object-contain pointer-events-none select-none\"><source src=\"" + thumbnailUrl + "\" type=\"video/mp4\"></video>";
+                // Menggunakan w-full h-auto dan object-contain agar video tegak memanjang ke atas, landscape melebar ke samping
+                return "<video preload=\"metadata\" muted playsinline oncontextmenu=\"return false;\" class=\"w-full h-auto max-h-[340px] object-contain pointer-events-none select-none\"><source src=\"" + thumbnailUrl + "\" type=\"video/mp4\"></video>";
             } else if (url["includes"]('youtube.com') || url["includes"]('youtu.be')) {
                 let embedUrl = url;
                 if(embedUrl["includes"]('watch?v=')) embedUrl = embedUrl["replace"]('watch?v=', 'embed/');
                 if(embedUrl["includes"]('youtu.be/')) embedUrl = embedUrl["replace"]('youtu.be/', 'youtube.com/embed/');
-                return "<iframe src=\"" + embedUrl + "\" class=\"w-full h-full pointer-events-none opacity-60\" frameborder=\"0\" allow=\"autoplay\"></iframe>";
-            } else { return "<div class=\"p-8 flex items-center justify-center\"><i class=\"fa-solid fa-video text-gray-700 text-2xl\"></i></div>"; }
+                // Khusus YouTube dipaksa kotak rasio standar karena API Iframe tidak melepas metadata dimensi mentah
+                return "<div class=\"w-full aspect-video\"><iframe src=\"" + embedUrl + "\" class=\"w-full h-full pointer-events-none opacity-60\" frameborder=\"0\" allow=\"autoplay\"></iframe></div>";
+            } else { return "<div class=\"p-8 flex items-center justify-center aspect-video\"><i class=\"fa-solid fa-video text-gray-700 text-2xl\"></i></div>"; }
         }
 
         function handleThumbnailClick(e, id, title) { e["preventDefault"](); e["stopPropagation"](); const btn = document["getElementById"]('play-btn-' + id); if (btn && btn["getAttribute"]('data-status') !== 'playing') playVideo(id, title); }
@@ -230,8 +225,11 @@
             if (!btn || !miniBox || !bigPlayerZone || !fileUrl) return;
             btn["setAttribute"]('data-status', 'playing'); btn["innerHTML"] = "<i class=\"fa-solid fa-xmark text-sm\"></i>"; btn["className"] = "w-8 h-8 rounded bg-red-600 hover:bg-red-700 text-white border border-red-500 flex items-center justify-center text-xs shadow-md";
             miniBox["style"]["setProperty"]('display', 'none', 'important'); bigPlayerZone["className"] = "w-full hidden mt-3 bg-black border border-gray-800 shadow-2xl rounded-lg overflow-hidden flex justify-center items-center h-auto"; bigPlayerZone["classList"]["remove"]('hidden');
+            
             if (fileUrl["match"](/\.(mp4|webm|ogg)/i) || fileUrl["includes"]('supabase.co/storage')) {
-                const playUrl = fileUrl["split"]('#')[0]; bigPlayerZone["innerHTML"] = "<video controls autoplay playsinline controlsList=\"nodownload\" oncontextmenu=\"return false;\" class=\"w-full h-auto max-h-[80vh] bg-black select-none object-contain\"><source src=\"" + playUrl + "\" type=\"video/mp4\"></video>";
+                const playUrl = fileUrl["split"]('#')[0]; 
+                // Player utama saat dibuka juga otomatis mengikuti ukuran landscape/portrait aslinya
+                bigPlayerZone["innerHTML"] = "<video controls autoplay playsinline controlsList=\"nodownload\" oncontextmenu=\"return false;\" class=\"w-full h-auto max-h-[85vh] bg-black select-none object-contain\"><source src=\"" + playUrl + "\" type=\"video/mp4\"></video>";
             } else if (fileUrl["includes"]('youtube.com') || fileUrl["includes"]('youtu.be')) {
                 bigPlayerZone["classList"]["add"]('aspect-video'); let embed = fileUrl; if(embed["includes"]('watch?v=')) embed = embed["replace"]('watch?v=', 'embed/'); if(embed["includes"]('youtu.be/')) embed = embed["replace"]('youtu.be/', 'youtube.com/embed/'); embed += embed["includes"]('?') ? "&autoplay=1" : "?autoplay=1";
                 bigPlayerZone["innerHTML"] = "<iframe src=\"" + embed + "\" class=\"w-full h-full\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>";
