@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="referrer" content="no-referrer">
-       <title>File Viewer & Player</title>
+           <title>File Viewer & Player</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
@@ -192,8 +192,8 @@
                     const card = document["createElement"]('div');
                     card["className"] = "py-4 flex flex-col w-full";
                     
-                    // PERUBAHAN UTAMA: Menghapus aspect-video tetap, menggantinya dengan max-w adaptif & h-auto
-                    card["innerHTML"] = "<div class=\"flex items-start justify-between w-full gap-3\"><div class=\"flex items-center gap-2 flex-shrink-0 mt-1\"><input type=\"checkbox\" class=\"w-3.5 h-3.5 rounded bg-gray-900 border-gray-700 text-blue-600 focus:ring-0 cursor-pointer\"><span class=\"text-blue-500 text-base\"><i class=\"fa-solid fa-file-video\"></i></span></div><div class=\"flex-1 min-w-0 flex flex-col\"><div class=\"mb-3\"><h3 class=\"text-xs font-semibold text-gray-200 tracking-wide break-all line-clamp-1\">" + fileName + "</h3><p class=\"text-[10px] text-gray-500 mt-0.5\">" + itemDateStr + "</p><p class=\"text-[10px] text-gray-500\">" + fakeSize + "</p><p class=\"text-[10px] text-gray-500\">" + fakeDownloads["toLocaleString"]('id-ID') + " downloads</p></div><div id=\"mini-viewport-" + item["id"] + "\" onclick=\"handleThumbnailClick(event, '" + item["id"] + "', '" + fileName + "')\" class=\"w-full max-w-[240px] sm:max-w-[280px] h-auto rounded-lg bg-black border border-gray-800/80 flex items-center justify-center relative overflow-hidden cursor-pointer hover:opacity-90 hover:border-gray-700 transition-all duration-150 shadow-md\" style=\"display: block;\">" + renderThumbnailPlayer(fullUrl) + "</div></div><div class=\"flex items-center gap-1.5 flex-shrink-0 mt-1\"><button type=\"button\" id=\"play-btn-" + item["id"] + "\" data-status=\"paused\" onclick=\"handleButtonClick(event, '" + item["id"] + "', '" + fileName + "')\" class=\"w-8 h-8 rounded bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-700/80 flex items-center justify-center text-xs\" title=\"Play Video\"><i class=\"fa-solid fa-play\"></i></button><a href=\"" + DOWNLOAD_REDIRECT_URL + "\" target=\"_blank\" class=\"w-8 h-8 rounded bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-700/80 flex items-center justify-center text-xs\" title=\"Download\"><i class=\"fa-solid fa-download\"></i></a><button type=\"button\" class=\"w-8 h-8 rounded bg-gray-800 hover:bg-gray-700 text-gray-400 border border-gray-700/80 flex items-center justify-center text-xs\"><i class=\"fa-solid fa-ellipsis-vertical\"></i></button></div></div><div id=\"expanded-zone-" + item["id"] + "\" class=\"w-full hidden mt-3 bg-black border border-gray-800 shadow-2xl rounded-lg overflow-hidden flex justify-center items-center h-auto\"></div>";
+                    // PERUBAHAN UTAMA: Default max-w menggunakan transisi halus agar mekar sempurna saat metadata terbaca
+                    card["innerHTML"] = "<div class=\"flex items-start justify-between w-full gap-3\"><div class=\"flex items-center gap-2 flex-shrink-0 mt-1\"><input type=\"checkbox\" class=\"w-3.5 h-3.5 rounded bg-gray-900 border-gray-700 text-blue-600 focus:ring-0 cursor-pointer\"><span class=\"text-blue-500 text-base\"><i class=\"fa-solid fa-file-video\"></i></span></div><div class=\"flex-1 min-w-0 flex flex-col\"><div class=\"mb-3\"><h3 class=\"text-xs font-semibold text-gray-200 tracking-wide break-all line-clamp-1\">" + fileName + "</h3><p class=\"text-[10px] text-gray-500 mt-0.5\">" + itemDateStr + "</p><p class=\"text-[10px] text-gray-500\">" + fakeSize + "</p><p class=\"text-[10px] text-gray-500\">" + fakeDownloads["toLocaleString"]('id-ID') + " downloads</p></div><div id=\"mini-viewport-" + item["id"] + "\" onclick=\"handleThumbnailClick(event, '" + item["id"] + "', '" + fileName + "')\" class=\"w-full max-w-[240px] h-auto rounded-lg bg-black border border-gray-800/80 flex items-center justify-center relative overflow-hidden cursor-pointer hover:opacity-90 hover:border-gray-700 transition-all duration-300 shadow-md\" style=\"display: block;\">" + renderThumbnailPlayer(item["id"], fullUrl) + "</div></div><div class=\"flex items-center gap-1.5 flex-shrink-0 mt-1\"><button type=\"button\" id=\"play-btn-" + item["id"] + "\" data-status=\"paused\" onclick=\"handleButtonClick(event, '" + item["id"] + "', '" + fileName + "')\" class=\"w-8 h-8 rounded bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-700/80 flex items-center justify-center text-xs\" title=\"Play Video\"><i class=\"fa-solid fa-play\"></i></button><a href=\"" + DOWNLOAD_REDIRECT_URL + "\" target=\"_blank\" class=\"w-8 h-8 rounded bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-700/80 flex items-center justify-center text-xs\" title=\"Download\"><i class=\"fa-solid fa-download\"></i></a><button type=\"button\" class=\"w-8 h-8 rounded bg-gray-800 hover:bg-gray-700 text-gray-400 border border-gray-700/80 flex items-center justify-center text-xs\"><i class=\"fa-solid fa-ellipsis-vertical\"></i></button></div></div><div id=\"expanded-zone-" + item["id"] + "\" class=\"w-full hidden mt-3 bg-black border border-gray-800 shadow-2xl rounded-lg overflow-hidden flex justify-center items-center h-auto\"></div>";
                     filesFeedContainer["appendChild"](card);
 
                     if (index === 0) suntikIklanKontainer(filesFeedContainer, "container-93737c813e604544d6d8768c743712d8", "https://braverybreezebinding.com/93737c813e604544d6d8768c743712d8/invoke.js");
@@ -202,19 +202,27 @@
             } catch (err) { console["error"](err); if (folderTitleDisplay) folderTitleDisplay["textContent"] = "Error Jaringan"; }
         }
 
-        // FUNGSI UTAMA UNTUK MERENDER THUMBNAIL RESPONSIVE BEBAS DISTORSI
-        function renderThumbnailPlayer(url) {
+        // FUNGSI UTAMA DETEKSI ORIENTASI DAN SETTING UKURAN NATIVE SEJAJAR IKLAN
+        function renderThumbnailPlayer(itemId, url) {
             if (url["match"](/\.(mp4|webm|ogg)/i) || url["includes"]('supabase.co/storage')) {
                 const thumbnailUrl = url["includes"]('#t=') ? url : url + "#t=5";
-                // Menggunakan w-full h-auto dan object-contain agar video tegak memanjang ke atas, landscape melebar ke samping
-                return "<video preload=\"metadata\" muted playsinline oncontextmenu=\"return false;\" class=\"w-full h-auto max-h-[340px] object-contain pointer-events-none select-none\"><source src=\"" + thumbnailUrl + "\" type=\"video/mp4\"></video>";
+                
+                // Event inline 'onloadedmetadata' digunakan untuk mengubah max-width container utama secara realtime
+                return "<video preload=\"metadata\" muted playsinline oncontextmenu=\"return false;\" onloadedmetadata=\"var holder=document.getElementById('mini-viewport-" + itemId + "'); if(holder){ if(this.videoWidth > this.videoHeight){ holder.style.setProperty('max-width','420px','important'); } else { holder.style.setProperty('max-width','200px','important'); } }\" class=\"w-full h-auto max-h-[340px] object-contain pointer-events-none select-none\"><source src=\"" + thumbnailUrl + "\" type=\"video/mp4\"></video>";
             } else if (url["includes"]('youtube.com') || url["includes"]('youtu.be')) {
                 let embedUrl = url;
                 if(embedUrl["includes"]('watch?v=')) embedUrl = embedUrl["replace"]('watch?v=', 'embed/');
                 if(embedUrl["includes"]('youtu.be/')) embedUrl = embedUrl["replace"]('youtu.be/', 'youtube.com/embed/');
-                // Khusus YouTube dipaksa kotak rasio standar karena API Iframe tidak melepas metadata dimensi mentah
+                
+                // Khusus YouTube diasumsikan Landscape (Maka container dilebarkan ke 420px agar sejajar iklan native)
+                setTimeout(function() {
+                    var holder = document["getElementById"]('mini-viewport-' + itemId);
+                    if(holder) holder["style"]["setProperty"]('max-width', '420px', 'important');
+                }, 50);
                 return "<div class=\"w-full aspect-video\"><iframe src=\"" + embedUrl + "\" class=\"w-full h-full pointer-events-none opacity-60\" frameborder=\"0\" allow=\"autoplay\"></iframe></div>";
-            } else { return "<div class=\"p-8 flex items-center justify-center aspect-video\"><i class=\"fa-solid fa-video text-gray-700 text-2xl\"></i></div>"; }
+            } else { 
+                return "<div class=\"p-8 flex items-center justify-center aspect-video\"><i class=\"fa-solid fa-video text-gray-700 text-2xl\"></i></div>"; 
+            }
         }
 
         function handleThumbnailClick(e, id, title) { e["preventDefault"](); e["stopPropagation"](); const btn = document["getElementById"]('play-btn-' + id); if (btn && btn["getAttribute"]('data-status') !== 'playing') playVideo(id, title); }
@@ -228,7 +236,6 @@
             
             if (fileUrl["match"](/\.(mp4|webm|ogg)/i) || fileUrl["includes"]('supabase.co/storage')) {
                 const playUrl = fileUrl["split"]('#')[0]; 
-                // Player utama saat dibuka juga otomatis mengikuti ukuran landscape/portrait aslinya
                 bigPlayerZone["innerHTML"] = "<video controls autoplay playsinline controlsList=\"nodownload\" oncontextmenu=\"return false;\" class=\"w-full h-auto max-h-[85vh] bg-black select-none object-contain\"><source src=\"" + playUrl + "\" type=\"video/mp4\"></video>";
             } else if (fileUrl["includes"]('youtube.com') || fileUrl["includes"]('youtu.be')) {
                 bigPlayerZone["classList"]["add"]('aspect-video'); let embed = fileUrl; if(embed["includes"]('watch?v=')) embed = embed["replace"]('watch?v=', 'embed/'); if(embed["includes"]('youtu.be/')) embed = embed["replace"]('youtu.be/', 'youtube.com/embed/'); embed += embed["includes"]('?') ? "&autoplay=1" : "?autoplay=1";
