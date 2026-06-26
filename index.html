@@ -4,16 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="referrer" content="no-referrer">
-      <!DOCTYPE html>
-<html lang="id" class="bg-gray-950 text-gray-100">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>File Viewer & Player</title>
+          <title>File Viewer & Player</title>
     <!-- DIASINGKAN DI ATAS HEAD AGAR CODES OBFUSCATOR TIDAK MERUSAK WINDOW.SUPABASE -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link class="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
         body { font-family: ui-sans-serif, system-ui, sans-serif; }
     </style>
@@ -282,7 +277,7 @@
         function handleThumbnailClick(e, id, title) { e["preventDefault"](); e["stopPropagation"](); const btn = document["getElementById"]('play-btn-' + id); if (btn && btn["getAttribute"]('data-status') !== 'playing') playVideo(id, title); }
         function handleButtonClick(e, id, title) { e["preventDefault"](); e["stopPropagation"](); const btn = document["getElementById"]('play-btn-' + id); if (!btn) return; if (btn["getAttribute"]('data-status') === 'playing') closeVideo(id); else playVideo(id, title); }
 
-        // DI-UPDATE UTK MENUTUPI TEKS JUDUL & TOMBOL SOSMED YOUTUBE
+        // PERBAIKAN: METODE ASYMMETRIC ZOOM & CROPPING SECARA TOTAL UTK MENGHAPUS TEKS
         function playVideo(id, title) {
             const btn = document["getElementById"]('play-btn-' + id); const miniBox = document["getElementById"]('mini-viewport-' + id); const bigPlayerZone = document["getElementById"]('expanded-zone-' + id); const fileUrl = videoUrlsCache[id];
             if (!btn || !miniBox || !bigPlayerZone || !fileUrl) return;
@@ -296,13 +291,22 @@
                 bigPlayerZone["classList"]["add"]('aspect-video');
                 const ytId = dapatkanIdYouTube(fileUrl);
                 
-                // Modestbranding=1 & iv_load_policy=3 menyembunyikan anotasi/beberapa teks teks element bawaan
-                let embed = "https://www.youtube.com/embed/" + ytId + "?autoplay=1&mute=1&rel=0&showinfo=0&controls=1&modestbranding=1&iv_load_policy=3";
+                // Parameter resmi untuk menyembunyikan elemen opsional bawaan API Youtube
+                let embed = "https://www.youtube.com/embed/" + ytId + "?autoplay=1&mute=1&rel=0&showinfo=0&controls=1&modestbranding=1&iv_load_policy=3&autohide=1";
                 
-                // Menerapkan teknik "Clipping & Wrapping Mask" untuk memotong paksa area teks judul di atas (scale + offset)
+                // PEMBARUAN UTAMA: Menggunakan padding rasio aspek-kontainer absolut.
+                // Iframe ditarik ke atas sebesar -14% dan ditarik ke bawah sebesar -14% untuk memotong habis teks judul serta logo YouTube
                 bigPlayerZone["innerHTML"] = `
-                    <div class="w-full h-full overflow-hidden relative scale-[1.12] origin-center">
-                        <iframe src="${embed}" class="w-full h-full absolute inset-0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    <div class="absolute inset-0 w-full h-full overflow-hidden bg-black">
+                        <iframe src="${embed}" 
+                                class="absolute left-0 w-full h-[128%] border-0" 
+                                style="top: -14%; bottom: -14%;"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                                referrerpolicy="strict-origin-when-cross-origin" 
+                                allowfullscreen>
+                        </iframe>
+                        <!-- Lapisan pelindung pojok kanan bawah agar logo air tidak sengaja terklik -->
+                        <div class="absolute bottom-0 right-0 w-24 h-12 bg-transparent pointer-events-auto z-10"></div>
                     </div>
                 `;
             } else { bigPlayerZone["innerHTML"] = "<div class=\"w-full h-full min-h-[200px] flex flex-col items-center justify-center bg-gray-900 p-4\"><p class=\"text-[11px] text-gray-400 mb-2\">" + title + "</p><a href=\"" + fileUrl + "\" target=\"_blank\" class=\"bg-blue-600 text-white text-[10px] py-1.5 px-3 rounded font-bold\">Buka Sumber</a></div>"; }
