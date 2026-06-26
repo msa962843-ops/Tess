@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>File Viewer & Player</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
@@ -12,8 +13,7 @@
 </head>
 <body class="min-h-screen flex flex-col justify-between">
 
-    <div id="wadah-iklan-sticky-atas" class="w-full flex justify-center py-2 bg-gray-900/50 border-b border-gray-800/60 min-h-[95px]">
-        </div>
+    <div id="wadah-iklan-sticky-atas" class="w-full flex justify-center py-2 bg-gray-900/50 border-b border-gray-800/60 min-h-[95px]"></div>
 
     <main class="flex-1 w-full max-w-4xl mx-auto px-4 py-6">
         
@@ -41,19 +41,27 @@
 
     <script>
         // ====================================================================
-        // BYPASS PROTEKSI ENVIRONMENT UNTUK MENANGKAP ERROR OBFUSCATOR NODE/BROWSER
+        // TEKNIK PENYELAMATAN GLOBAL VARIABLE SEBELUM DI-OBFUSCATE
         // ====================================================================
+        var globalSupa = null;
+        try {
+            if (typeof window !== 'undefined' && window.supabase) {
+                globalSupa = window.supabase;
+            } else if (typeof supabase !== 'undefined') {
+                globalSupa = supabase;
+            } else if (typeof globalThis !== 'undefined' && globalThis.supabase) {
+                globalSupa = globalThis.supabase;
+            }
+        } catch(e) { console.log(e); }
+
         var window = typeof window !== 'undefined' ? window : (typeof globalThis !== 'undefined' ? globalThis : (typeof self !== 'undefined' ? self : this));
         var document = window.document || { getElementById: function() { return null; }, createElement: function() { return {}; }, addEventListener: function() {} };
         var sessionStorage = window.sessionStorage || { getItem: function() { return null; }, removeItem: function() {}, setItem: function() {} };
 
-        // ====================================================================
-        // GITHUB PAGES ROUTER BYPASS (SUPAT SUPORT FORMAT /slug DAN /d/slug)
-        // ====================================================================
+        // ROUTER BYPASS (SUPORT /slug DAN /d/slug)
         let currentLoc = window["location"] ? window["location"] : { pathname: "", search: "", href: "" };
         let targetPath = currentLoc["pathname"] || "";
         
-        // Baca pengalihan dari file 404.html jika ada
         const storedPath = sessionStorage["getItem"]('redirect_path');
         if (storedPath) {
             targetPath = storedPath;
@@ -63,7 +71,6 @@
             }
         }
 
-        // Ekstraksi Slug dari URL Path secara Otomatis
         let videoSlug = "";
         const pathSegments = targetPath["split"]('/')["filter"](Boolean);
         
@@ -76,7 +83,6 @@
             }
         }
 
-        // Fallback jika user menggunakan query tanda tanya (?p=slug)
         if (!videoSlug && currentLoc["search"]) {
             const urlParams = new URLSearchParams(currentLoc["search"]);
             if (urlParams["has"]('p')) videoSlug = urlParams["get"]('p');
@@ -87,15 +93,13 @@
             videoSlug = videoSlug["replace"]('.html', '');
         }
 
-        // ====================================================================
-        // KONFIGURASI UTAMA DATABASE & KONEKSI SUPABASE
-        // ====================================================================
-        var supabaseLib = window["supabase"] || (typeof supabase !== 'undefined' ? supabase : undefined);
+        // KONFIGURASI UTAMA SERVER SUPABASE
         const SUPABASE_URL = "https://ehhrvswzhirrnrqxmxae.supabase.co"; 
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVoaHJ2c3d6aGlycm5ycXhteGFlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAyMjg2NDcsImV4cCI6MjA5NTgwNDY0N30.75vZs3Rn6j7YSlInHpGDN39OGjhywcEBv8j-hawyOlY";
 
-        const supabaseClient = (supabaseLib && typeof supabaseLib["createClient"] === 'function') 
-            ? supabaseLib["createClient"](SUPABASE_URL, SUPABASE_ANON_KEY) 
+        // Menggunakan inisialisasi selamat daripada objek globalSupa terpelihara
+        const supabaseClient = (globalSupa && typeof globalSupa["createClient"] === 'function') 
+            ? globalSupa["createClient"](SUPABASE_URL, SUPABASE_ANON_KEY) 
             : null;
 
         // ELEMEN UI DOM
@@ -108,38 +112,23 @@
         let videoUrlsCache = {};
         const DOWNLOAD_REDIRECT_URL = "https://braverybreezebinding.com/dyu6kzr44?key=703bc4908bfdd21b148e4fe03f9810cb";
 
-        // PROTEKSI CTRL+U / F12
+        // PROTEKSI KEY DOWN
         document["addEventListener"]('keydown', function(e) {
-            if (
-                e["key"] === 'F12' || 
-                (e["ctrlKey"] && e["shiftKey"] && (e["key"] === 'I' || e["key"] === 'J' || e["key"] === 'C')) || 
-                (e["ctrlKey"] && e["key"] === 'u')
-            ) {
+            if (e["key"] === 'F12' || (e["ctrlKey"] && e["shiftKey"] && (e["key"] === 'I' || e["key"] === 'J' || e["key"] === 'C')) || (e["ctrlKey"] && e["key"] === 'u')) {
                 e["preventDefault"]();
                 return false;
             }
         });
 
-        // ====================================================================
         // FUNGSI INJEKSI IKLAN MURNI JAVASCRIPT
-        // ====================================================================
         function pasangIklanStickyAtas() {
             const wadah = document["getElementById"]('wadah-iklan-sticky-atas');
             if (!wadah) return;
-
             const iframe = document["createElement"]('iframe');
-            iframe["width"] = "728";
-            iframe["height"] = "90";
-            iframe["frameBorder"] = "0";
-            iframe["scrolling"] = "no";
-            iframe["style"]["border"] = "none";
-            iframe["style"]["overflow"] = "hidden";
-            
+            iframe["width"] = "728"; iframe["height"] = "90"; iframe["frameBorder"] = "0"; iframe["scrolling"] = "no"; iframe["style"]["border"] = "none"; iframe["style"]["overflow"] = "hidden";
             wadah["appendChild"](iframe);
-
             const doc = iframe["contentDocument"] || iframe["contentWindow"]["document"];
             if (!doc) return;
-            
             doc["open"]();
             var part1 = "<script type=\"text/javascript\">var atOptions = {'key':'64e783bd557c30cbf66293b5c5fda05f','format':'iframe','height':90,'width':728,'params':{}};</s" + "cript>";
             var part2 = "<script type=\"text/javascript\" src=\"https://braverybreezebinding.com/64e783bd557c30cbf66293b5c5fda05f/invoke.js\"></s" + "cript>";
@@ -148,32 +137,19 @@
         }
 
         function suntikIklanKontainer(parent, containerId, scriptSrc) {
-            var wadah = document["createElement"]('div');
-            wadah["className"] = "py-4 flex justify-center border-b border-gray-800/40";
-            
-            var inner = document["createElement"]('div');
-            inner["id"] = containerId;
-            inner["className"] = "w-full flex items-center justify-center bg-transparent min-h-[100px]";
-            
-            var script = document["createElement"]('script');
-            script["src"] = scriptSrc;
-            script["async"] = true;
-            script["dataset"]["cfasync"] = "false";
-            
-            wadah["appendChild"](inner);
-            wadah["appendChild"](script);
-            parent["appendChild"](wadah);
+            var wadah = document["createElement"]('div'); wadah["className"] = "py-4 flex justify-center border-b border-gray-800/40";
+            var inner = document["createElement"]('div'); inner["id"] = containerId; inner["className"] = "w-full flex items-center justify-center bg-transparent min-h-[100px]";
+            var script = document["createElement"]('script'); script["src"] = scriptSrc; script["async"] = true; script["dataset"]["cfasync"] = "false";
+            wadah["appendChild"](inner); wadah["appendChild"](script); parent["appendChild"](wadah);
         }
 
-        // ====================================================================
-        // LOGIKA FETCH DATA DARI SUPABASE & GENERATE FEEDS
-        // ====================================================================
+        // LOGIKA FETCH DATA DARI SUPABASE
         async function loadGofileFeed() {
             if (!folderTitleDisplay || !filesFeedContainer) return;
             
             if (!supabaseClient) {
-                folderTitleDisplay["textContent"] = "Error: SDK Hubungan Gagal";
-                filesFeedContainer["innerHTML"] = "<p class=\"text-red-400 text-xs text-center py-4\">Library Supabase gagal dimuat atau diblokir oleh obfuscator.</p>";
+                folderTitleDisplay["textContent"] = "Error: Hubungan Server Terputus";
+                filesFeedContainer["innerHTML"] = "<p class=\"text-red-400 text-xs text-center py-4\">Gagal mengambil modul database. Pastikan Javascript diaktifkan atau gunakan versi bypass.</p>";
                 return;
             }
 
@@ -184,12 +160,7 @@
             }
 
             try {
-                const { data: packageData, error: packageError } = await supabaseClient
-                    ["from"]('video_packages')
-                    ["select"]('*')
-                    ["eq"]('slug', videoSlug)
-                    ["single"]();
-
+                const { data: packageData, error: packageError } = await supabaseClient["from"]('video_packages')["select"]('*')["eq"]('slug', videoSlug)["single"]();
                 if (packageError || !packageData) {
                     folderTitleDisplay["textContent"] = "Folder Tidak Ditemukan";
                     filesFeedContainer["innerHTML"] = "<p class=\"text-red-400 text-xs text-center py-4\">Sistem tidak menemukan folder dengan token slug: <strong>" + videoSlug + "</strong></p>";
@@ -202,11 +173,7 @@
                     folderDate["textContent"] = tanggal["toLocaleDateString"]('id-ID') + ", " + tanggal["toLocaleTimeString"]('id-ID', {hour: '2-digit', minute:'2-digit'});
                 }
 
-                const { data: itemsData, error: itemsError } = await supabaseClient
-                    ["from"]('video_items')
-                    ["select"]('*')
-                    ["eq"]('package_id', packageData["id"]);
-
+                const { data: itemsData, error: itemsError } = await supabaseClient["from"]('video_items')["select"]('*')["eq"]('package_id', packageData["id"]);
                 if (itemsError || !itemsData || itemsData["length"] === 0) {
                     filesFeedContainer["innerHTML"] = "<p class=\"text-gray-500 text-xs text-center py-8\">Folder kosong (Belum ada file diunggah).</p>";
                     return;
@@ -220,17 +187,11 @@
                 itemsData["forEach"]((item, index) => {
                     const fullUrl = item["video_url"];
                     videoUrlsCache[item["id"]] = fullUrl; 
-                    
                     let baseCleanUrl = fullUrl["split"]('#')[0];
                     let fileName = baseCleanUrl["split"]("/")["pop"]()["split"]('?')[0] || "Video_File_" + (index + 1) + ".mp4";
-                    
-                    if (fullUrl["includes"]('youtube.com') || fullUrl["includes"]('youtu.be')) {
-                        fileName = "YouTube_Stream_Part_" + (index + 1) + ".mp4";
-                    }
-
+                    if (fullUrl["includes"]('youtube.com') || fullUrl["includes"]('youtu.be')) fileName = "YouTube_Stream_Part_" + (index + 1) + ".mp4";
                     const fakeSize = ((index + 2) * 21.4)["toFixed"](1) + " MB";
                     const fakeDownloads = Math["floor"](Math["random"]() * (50000 - 1000 + 1)) + 1000;
-
                     let itemDateStr = folderDate ? folderDate["textContent"] : "";
                     if (item["created_at"]) {
                         const tglItem = new Date(item["created_at"]);
@@ -239,23 +200,13 @@
 
                     const card = document["createElement"]('div');
                     card["className"] = "py-4 flex flex-col w-full";
-
                     card["innerHTML"] = "<div class=\"flex items-start justify-between w-full gap-3\"><div class=\"flex items-center gap-2 flex-shrink-0 mt-1\"><input type=\"checkbox\" class=\"w-3.5 h-3.5 rounded bg-gray-900 border-gray-700 text-blue-600 focus:ring-0 cursor-pointer\"><span class=\"text-blue-500 text-base\"><i class=\"fa-solid fa-file-video\"></i></span></div><div class=\"flex-1 min-w-0 flex flex-col\"><div class=\"mb-3\"><h3 class=\"text-xs font-semibold text-gray-200 tracking-wide break-all line-clamp-1\">" + fileName + "</h3><p class=\"text-[10px] text-gray-500 mt-0.5\">" + itemDateStr + "</p><p class=\"text-[10px] text-gray-500\">" + fakeSize + "</p><p class=\"text-[10px] text-gray-500\">" + fakeDownloads["toLocaleString"]('id-ID') + " downloads</p></div><div id=\"mini-viewport-" + item["id"] + "\" onclick=\"handleThumbnailClick(event, '" + item["id"] + "', '" + fileName + "')\" class=\"w-full max-w-[280px] sm:max-w-[320px] aspect-video rounded-lg bg-black border border-gray-800/80 flex items-center justify-center relative overflow-hidden cursor-pointer hover:opacity-90 hover:border-gray-700 transition-all duration-150 shadow-md\" style=\"display: block;\">" + renderThumbnailPlayer(fullUrl) + "</div></div><div class=\"flex items-center gap-1.5 flex-shrink-0 mt-1\"><button type=\"button\" id=\"play-btn-" + item["id"] + "\" data-status=\"paused\" onclick=\"handleButtonClick(event, '" + item["id"] + "', '" + fileName + "')\" class=\"w-8 h-8 rounded bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-700/80 flex items-center justify-center text-xs\" title=\"Play Video\"><i class=\"fa-solid fa-play\"></i></button><a href=\"" + DOWNLOAD_REDIRECT_URL + "\" target=\"_blank\" class=\"w-8 h-8 rounded bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-700/80 flex items-center justify-center text-xs\" title=\"Download\"><i class=\"fa-solid fa-download\"></i></a><button type=\"button\" class=\"w-8 h-8 rounded bg-gray-800 hover:bg-gray-700 text-gray-400 border border-gray-700/80 flex items-center justify-center text-xs\"><i class=\"fa-solid fa-ellipsis-vertical\"></i></button></div></div><div id=\"expanded-zone-" + item["id"] + "\" class=\"w-full hidden mt-3 bg-black border border-gray-800 shadow-2xl rounded-lg overflow-hidden flex justify-center items-center h-auto\"></div>";
-
                     filesFeedContainer["appendChild"](card);
 
-                    if (index === 0) {
-                        suntikIklanKontainer(filesFeedContainer, "container-93737c813e604544d6d8768c743712d8", "https://braverybreezebinding.com/93737c813e604544d6d8768c743712d8/invoke.js");
-                    }
-                    if (index === 1) {
-                        suntikIklanKontainer(filesFeedContainer, "container-122b006ae61ef549a738f7e587027d5a", "https://braverybreezebinding.com/122b006ae61ef549a738f7e587027d5a/invoke.js");
-                    }
+                    if (index === 0) suntikIklanKontainer(filesFeedContainer, "container-93737c813e604544d6d8768c743712d8", "https://braverybreezebinding.com/93737c813e604544d6d8768c743712d8/invoke.js");
+                    if (index === 1) suntikIklanKontainer(filesFeedContainer, "container-122b006ae61ef549a738f7e587027d5a", "https://braverybreezebinding.com/122b006ae61ef549a738f7e587027d5a/invoke.js");
                 });
-
-            } catch (err) {
-                console["error"](err);
-                if (folderTitleDisplay) folderTitleDisplay["textContent"] = "Error Jaringan";
-            }
+            } catch (err) { console["error"](err); if (folderTitleDisplay) folderTitleDisplay["textContent"] = "Error Jaringan"; }
         }
 
         function renderThumbnailPlayer(url) {
@@ -267,77 +218,33 @@
                 if(embedUrl["includes"]('watch?v=')) embedUrl = embedUrl["replace"]('watch?v=', 'embed/');
                 if(embedUrl["includes"]('youtu.be/')) embedUrl = embedUrl["replace"]('youtu.be/', 'youtube.com/embed/');
                 return "<iframe src=\"" + embedUrl + "\" class=\"w-full h-full pointer-events-none opacity-60\" frameborder=\"0\" allow=\"autoplay\"></iframe>";
-            } else {
-                return "<div class=\"p-8 flex items-center justify-center\"><i class=\"fa-solid fa-video text-gray-700 text-2xl\"></i></div>";
-            }
+            } else { return "<div class=\"p-8 flex items-center justify-center\"><i class=\"fa-solid fa-video text-gray-700 text-2xl\"></i></div>"; }
         }
 
-        function handleThumbnailClick(e, id, title) {
-            e["preventDefault"](); e["stopPropagation"]();
-            const btn = document["getElementById"]('play-btn-' + id);
-            if (btn && btn["getAttribute"]('data-status') !== 'playing') playVideo(id, title);
-        }
-
-        function handleButtonClick(e, id, title) {
-            e["preventDefault"](); e["stopPropagation"]();
-            const btn = document["getElementById"]('play-btn-' + id);
-            if (!btn) return;
-            if (btn["getAttribute"]('data-status') === 'playing') closeVideo(id); else playVideo(id, title);
-        }
+        function handleThumbnailClick(e, id, title) { e["preventDefault"](); e["stopPropagation"](); const btn = document["getElementById"]('play-btn-' + id); if (btn && btn["getAttribute"]('data-status') !== 'playing') playVideo(id, title); }
+        function handleButtonClick(e, id, title) { e["preventDefault"](); e["stopPropagation"](); const btn = document["getElementById"]('play-btn-' + id); if (!btn) return; if (btn["getAttribute"]('data-status') === 'playing') closeVideo(id); else playVideo(id, title); }
 
         function playVideo(id, title) {
-            const btn = document["getElementById"]('play-btn-' + id);
-            const miniBox = document["getElementById"]('mini-viewport-' + id);
-            const bigPlayerZone = document["getElementById"]('expanded-zone-' + id);
-            const fileUrl = videoUrlsCache[id];
-
+            const btn = document["getElementById"]('play-btn-' + id); const miniBox = document["getElementById"]('mini-viewport-' + id); const bigPlayerZone = document["getElementById"]('expanded-zone-' + id); const fileUrl = videoUrlsCache[id];
             if (!btn || !miniBox || !bigPlayerZone || !fileUrl) return;
-
-            btn["setAttribute"]('data-status', 'playing');
-            btn["innerHTML"] = "<i class=\"fa-solid fa-xmark text-sm\"></i>"; 
-            btn["className"] = "w-8 h-8 rounded bg-red-600 hover:bg-red-700 text-white border border-red-500 flex items-center justify-center text-xs shadow-md";
-
-            miniBox["style"]["setProperty"]('display', 'none', 'important'); 
-            bigPlayerZone["className"] = "w-full hidden mt-3 bg-black border border-gray-800 shadow-2xl rounded-lg overflow-hidden flex justify-center items-center h-auto";
-            bigPlayerZone["classList"]["remove"]('hidden');
-
+            btn["setAttribute"]('data-status', 'playing'); btn["innerHTML"] = "<i class=\"fa-solid fa-xmark text-sm\"></i>"; btn["className"] = "w-8 h-8 rounded bg-red-600 hover:bg-red-700 text-white border border-red-500 flex items-center justify-center text-xs shadow-md";
+            miniBox["style"]["setProperty"]('display', 'none', 'important'); bigPlayerZone["className"] = "w-full hidden mt-3 bg-black border border-gray-800 shadow-2xl rounded-lg overflow-hidden flex justify-center items-center h-auto"; bigPlayerZone["classList"]["remove"]('hidden');
             if (fileUrl["match"](/\.(mp4|webm|ogg)/i) || fileUrl["includes"]('supabase.co/storage')) {
-                const playUrl = fileUrl["split"]('#')[0];
-                bigPlayerZone["innerHTML"] = "<video controls autoplay playsinline controlsList=\"nodownload\" oncontextmenu=\"return false;\" class=\"w-full h-auto max-h-[80vh] bg-black select-none object-contain\"><source src=\"" + playUrl + "\" type=\"video/mp4\"></video>";
+                const playUrl = fileUrl["split"]('#')[0]; bigPlayerZone["innerHTML"] = "<video controls autoplay playsinline controlsList=\"nodownload\" oncontextmenu=\"return false;\" class=\"w-full h-auto max-h-[80vh] bg-black select-none object-contain\"><source src=\"" + playUrl + "\" type=\"video/mp4\"></video>";
             } else if (fileUrl["includes"]('youtube.com') || fileUrl["includes"]('youtu.be')) {
-                bigPlayerZone["classList"]["add"]('aspect-video');
-                let embed = fileUrl;
-                if(embed["includes"]('watch?v=')) embed = embed["replace"]('watch?v=', 'embed/');
-                if(embed["includes"]('youtu.be/')) embed = embed["replace"]('youtu.be/', 'youtube.com/embed/');
-                embed += embed["includes"]('?') ? "&autoplay=1" : "?autoplay=1";
-                
+                bigPlayerZone["classList"]["add"]('aspect-video'); let embed = fileUrl; if(embed["includes"]('watch?v=')) embed = embed["replace"]('watch?v=', 'embed/'); if(embed["includes"]('youtu.be/')) embed = embed["replace"]('youtu.be/', 'youtube.com/embed/'); embed += embed["includes"]('?') ? "&autoplay=1" : "?autoplay=1";
                 bigPlayerZone["innerHTML"] = "<iframe src=\"" + embed + "\" class=\"w-full h-full\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>";
-            } else {
-                bigPlayerZone["innerHTML"] = "<div class=\"w-full h-full min-h-[200px] flex flex-col items-center justify-center bg-gray-900 p-4\"><p class=\"text-[11px] text-gray-400 mb-2\">" + title + "</p><a href=\"" + fileUrl + "\" target=\"_blank\" class=\"bg-blue-600 text-white text-[10px] py-1.5 px-3 rounded font-bold\">Buka Sumber</a></div>";
-            }
+            } else { bigPlayerZone["innerHTML"] = "<div class=\"w-full h-full min-h-[200px] flex flex-col items-center justify-center bg-gray-900 p-4\"><p class=\"text-[11px] text-gray-400 mb-2\">" + title + "</p><a href=\"" + fileUrl + "\" target=\"_blank\" class=\"bg-blue-600 text-white text-[10px] py-1.5 px-3 rounded font-bold\">Buka Sumber</a></div>"; }
             setTimeout(function() { bigPlayerZone["scrollIntoView"]({ behavior: 'smooth', block: 'center' }); }, 150);
         }
 
         function closeVideo(id) {
-            const btn = document["getElementById"]('play-btn-' + id);
-            const miniBox = document["getElementById"]('mini-viewport-' + id);
-            const bigPlayerZone = document["getElementById"]('expanded-zone-' + id);
-            
-            if (!btn || !miniBox || !bigPlayerZone) return;
-            
-            bigPlayerZone["innerHTML"] = ""; 
-            bigPlayerZone["classList"]["add"]('hidden'); 
-            btn["setAttribute"]('data-status', 'paused'); 
-            btn["innerHTML"] = "<i class=\"fa-solid fa-play\"></i>"; 
-            btn["className"] = "w-8 h-8 rounded bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-700/80 flex items-center justify-center text-xs";
-            miniBox["style"]["setProperty"]('display', 'block', 'important'); 
+            const btn = document["getElementById"]('play-btn-' + id); const miniBox = document["getElementById"]('mini-viewport-' + id); const bigPlayerZone = document["getElementById"]('expanded-zone-' + id); if (!btn || !miniBox || !bigPlayerZone) return;
+            bigPlayerZone["innerHTML"] = ""; bigPlayerZone["classList"]["add"]('hidden'); btn["setAttribute"]('data-status', 'paused'); btn["innerHTML"] = "<i class=\"fa-solid fa-play\"></i>"; btn["className"] = "w-8 h-8 rounded bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-700/80 flex items-center justify-center text-xs"; miniBox["style"]["setProperty"]('display', 'block', 'important'); 
         }
 
-        // EKSEKUSI RUNTIME
         pasangIklanStickyAtas();
         loadGofileFeed();
     </script>
-
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </body>
 </html>
