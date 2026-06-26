@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Redirecting...</title>
+    <script type="text/javascript">
+        // Ambil jalur URL yang diakses (misal: /r06cQQ atau /d/r06cQQ)
+        var pathSegments = window.location.pathname.split('/').filter(Boolean);
+        
+        if (pathSegments.length > 0) {
+            // Simpan path asli ke dalam sessionStorage sebelum dialihkan
+            sessionStorage.setItem('redirect_path', window.location.pathname + window.location.search);
+        }
+        
+        // Alihkan secara diam-diam kembali ke halaman utama (index.html) tanpa query string di URL
+        window.location.replace(window.location.protocol + '//' + window.location.hostname + (window.location.port ? ':' + window.location.port : ''));
+    </script>
+</head>
+<body>
+</body>
+</html>
