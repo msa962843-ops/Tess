@@ -4,7 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="referrer" content="no-referrer">
-        <title>File Viewer & Player</title>
+       <!DOCTYPE html>
+<html lang="id" class="bg-gray-950 text-gray-100">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Viewer & Player</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
@@ -41,7 +46,266 @@
     </footer>
 
     <script>
-      const _0x780c90=_0x236e;(function(_0xa2d516,_0x2d5bab){const _0x21adcb=_0x236e,_0x4e8834=_0xa2d516();while(!![]){try{const _0x427581=parseInt(_0x21adcb(0x17a))/0x1+parseInt(_0x21adcb(0x1cc))/0x2+parseInt(_0x21adcb(0x1f9))/0x3*(-parseInt(_0x21adcb(0x1eb))/0x4)+parseInt(_0x21adcb(0x161))/0x5*(parseInt(_0x21adcb(0x1ca))/0x6)+parseInt(_0x21adcb(0x17c))/0x7*(parseInt(_0x21adcb(0x177))/0x8)+parseInt(_0x21adcb(0x1e6))/0x9*(parseInt(_0x21adcb(0x19f))/0xa)+parseInt(_0x21adcb(0x1b9))/0xb*(-parseInt(_0x21adcb(0x1f2))/0xc);if(_0x427581===_0x2d5bab)break;else _0x4e8834['push'](_0x4e8834['shift']());}catch(_0x41274a){_0x4e8834['push'](_0x4e8834['shift']());}}}(_0x16ad,0x27e67));function _0x236e(_0x312fc0,_0x5382af){_0x312fc0=_0x312fc0-0x150;const _0x16ad6d=_0x16ad();let _0x236e30=_0x16ad6d[_0x312fc0];return _0x236e30;}var globalSupa=null;try{if(typeof window!=='undefined'&&window[_0x780c90(0x17d)])globalSupa=window[_0x780c90(0x17d)];else{if(typeof supabase!==_0x780c90(0x1cf))globalSupa=supabase;else typeof globalThis!==_0x780c90(0x1cf)&&globalThis[_0x780c90(0x17d)]&&(globalSupa=globalThis[_0x780c90(0x17d)]);}}catch(_0x45160c){console[_0x780c90(0x170)](_0x45160c);}var window=typeof window!==_0x780c90(0x1cf)?window:typeof globalThis!==_0x780c90(0x1cf)?globalThis:typeof self!==_0x780c90(0x1cf)?self:this,document=window[_0x780c90(0x188)]||{'getElementById':function(){return null;},'createElement':function(){return{};},'addEventListener':function(){}},sessionStorage=window[_0x780c90(0x1c2)]||{'getItem':function(){return null;},'removeItem':function(){},'setItem':function(){}};let currentLoc=window[_0x780c90(0x16e)]?window[_0x780c90(0x16e)]:{'pathname':'','search':'','href':''},targetPath=currentLoc['pathname']||'';const storedPath=sessionStorage[_0x780c90(0x183)](_0x780c90(0x1a2));storedPath&&(targetPath=storedPath,sessionStorage[_0x780c90(0x1da)](_0x780c90(0x1a2)),window[_0x780c90(0x18e)]&&window['history'][_0x780c90(0x16b)]&&window[_0x780c90(0x18e)][_0x780c90(0x16b)](null,null,targetPath));let videoSlug='';const pathSegments=targetPath[_0x780c90(0x178)]('/')[_0x780c90(0x1d2)](Boolean);if(pathSegments['length']>0x0){let lastSeg=pathSegments[pathSegments[_0x780c90(0x1e8)]-0x1];if(lastSeg&&lastSeg!==_0x780c90(0x1ea)&&lastSeg!==_0x780c90(0x1d6))videoSlug=lastSeg;else pathSegments[_0x780c90(0x1e8)]>0x1&&(videoSlug=pathSegments[pathSegments[_0x780c90(0x1e8)]-0x2]);}if(!videoSlug&&currentLoc[_0x780c90(0x1c1)]){const urlParams=new URLSearchParams(currentLoc[_0x780c90(0x1c1)]);if(urlParams[_0x780c90(0x1f0)]('p'))videoSlug=urlParams['get']('p');else{if(urlParams['has'](_0x780c90(0x1e3)))videoSlug=urlParams[_0x780c90(0x160)](_0x780c90(0x1e3));}}videoSlug&&(videoSlug=videoSlug[_0x780c90(0x156)]('.html',''));const SUPABASE_URL='https://ehhrvswzhirrnrqxmxae.supabase.co',SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVoaHJ2c3d6aGlycm5ycXhteGFlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAyMjg2NDcsImV4cCI6MjA5NTgwNDY0N30.75vZs3Rn6j7YSlInHpGDN39OGjhywcEBv8j-hawyOlY',supabaseClient=globalSupa&&typeof globalSupa[_0x780c90(0x1dd)]===_0x780c90(0x151)?globalSupa[_0x780c90(0x1dd)](SUPABASE_URL,SUPABASE_ANON_KEY):null,folderTitleDisplay=document[_0x780c90(0x17b)](_0x780c90(0x1e9)),folderDate=document[_0x780c90(0x17b)](_0x780c90(0x1df)),filesFeedContainer=document[_0x780c90(0x17b)]('files-feed-container'),fileCountSpan=document[_0x780c90(0x17b)]('file-count'),totalItemsFooter=document[_0x780c90(0x17b)](_0x780c90(0x15d));let videoUrlsCache={};const DOWNLOAD_REDIRECT_URL=_0x780c90(0x159);document[_0x780c90(0x199)](_0x780c90(0x198),function(_0x475645){const _0x2c7849=_0x780c90;if(_0x475645[_0x2c7849(0x1e2)]===_0x2c7849(0x19a)||_0x475645[_0x2c7849(0x1f4)]&&_0x475645[_0x2c7849(0x1f3)]&&(_0x475645['key']==='I'||_0x475645[_0x2c7849(0x1e2)]==='J'||_0x475645['key']==='C')||_0x475645[_0x2c7849(0x1f4)]&&_0x475645[_0x2c7849(0x1e2)]==='u')return _0x475645[_0x2c7849(0x1e7)](),![];});function pasangIklanStickyAtas(){const _0x2318f4=_0x780c90,_0x384bff=document['getElementById'](_0x2318f4(0x196));if(!_0x384bff)return;const _0x566638=document['createElement'](_0x2318f4(0x179));_0x566638[_0x2318f4(0x1cd)]=_0x2318f4(0x1c6),_0x566638['height']='90',_0x566638[_0x2318f4(0x1bf)]='0',_0x566638['scrolling']='no',_0x566638[_0x2318f4(0x1d1)][_0x2318f4(0x171)]=_0x2318f4(0x1d5),_0x566638[_0x2318f4(0x1d1)]['overflow']=_0x2318f4(0x164),_0x384bff[_0x2318f4(0x193)](_0x566638);const _0x587dc1=_0x566638[_0x2318f4(0x185)]||_0x566638[_0x2318f4(0x1b2)][_0x2318f4(0x188)];if(!_0x587dc1)return;_0x587dc1[_0x2318f4(0x1b8)]();var _0x525bb3=_0x2318f4(0x150)+'cript>',_0x2f1cde=_0x2318f4(0x19d)+_0x2318f4(0x163);_0x587dc1[_0x2318f4(0x1ae)]('<body\x20style=\x22margin:0;padding:0;background:transparent;display:flex;justify-content:center;align-items:center;\x22>'+_0x525bb3+_0x2f1cde+'</body>'),_0x587dc1['close']();}function suntikIklanKontainer(_0x4afdd8,_0x578021,_0x334b03){const _0x5be4f8=_0x780c90;var _0x5700f3=document[_0x5be4f8(0x1ce)](_0x5be4f8(0x1b4));_0x5700f3[_0x5be4f8(0x184)]=_0x5be4f8(0x1f8);const _0x447794=(Math[_0x5be4f8(0x1d7)]()*(0x46-0x14)+0x14)['toFixed'](0x1)+_0x5be4f8(0x1f1),_0x4205e3=Math[_0x5be4f8(0x15f)](Math[_0x5be4f8(0x1d7)]()*(0xafc8-0x3a98+0x1))+0x3a98;_0x5700f3[_0x5be4f8(0x1c3)]=_0x5be4f8(0x1aa)+_0x447794+_0x5be4f8(0x1ec)+_0x4205e3['toLocaleString'](_0x5be4f8(0x15b))+_0x5be4f8(0x191)+DOWNLOAD_REDIRECT_URL+_0x5be4f8(0x167)+DOWNLOAD_REDIRECT_URL+'\x22\x20target=\x22_blank\x22\x20class=\x22w-8\x20h-8\x20rounded\x20bg-gray-800\x20hover:bg-gray-700\x20text-gray-300\x20border\x20border-gray-700/80\x20flex\x20items-center\x20justify-center\x20text-xs\x22\x20title=\x22Download\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<i\x20class=\x22fa-solid\x20fa-download\x22></i>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</a>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<a\x20href=\x22'+DOWNLOAD_REDIRECT_URL+'\x22\x20target=\x22_blank\x22\x20class=\x22w-8\x20h-8\x20rounded\x20bg-gray-800\x20hover:bg-gray-700\x20text-gray-400\x20border\x20border-gray-700/80\x20flex\x20items-center\x20justify-center\x20text-xs\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<i\x20class=\x22fa-solid\x20fa-ellipsis-vertical\x22></i>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</a>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22w-full\x20pl-7\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20id=\x22'+_0x578021+_0x5be4f8(0x15a);var _0x361df2=document[_0x5be4f8(0x1ce)]('script');_0x361df2[_0x5be4f8(0x1b7)]=_0x334b03,_0x361df2[_0x5be4f8(0x1e1)]=!![],_0x361df2['dataset'][_0x5be4f8(0x1ab)]=_0x5be4f8(0x19c),_0x4afdd8[_0x5be4f8(0x193)](_0x5700f3),setTimeout(function(){const _0x3f9d92=_0x5be4f8;var _0xa95fd8=document[_0x3f9d92(0x17b)](_0x578021);if(_0xa95fd8)_0xa95fd8[_0x3f9d92(0x193)](_0x361df2);},0x14);}async function loadGofileFeed(){const _0x1db6ee=_0x780c90;if(!folderTitleDisplay||!filesFeedContainer)return;if(!supabaseClient){folderTitleDisplay[_0x1db6ee(0x155)]='Error:\x20Hubungan\x20Server\x20Terputus',filesFeedContainer[_0x1db6ee(0x1c3)]='<p\x20class=\x22text-red-400\x20text-xs\x20text-center\x20py-4\x22>Gagal\x20mengambil\x20modul\x20database.</p>';return;}if(!videoSlug||videoSlug==='view.html'||videoSlug==='index.html'||videoSlug===_0x1db6ee(0x1d6)){folderTitleDisplay[_0x1db6ee(0x155)]='Menunggu\x20Slug\x20URL\x20/\x20Token...',filesFeedContainer[_0x1db6ee(0x1c3)]='<div\x20class=\x22text-center\x20py-8\x20text-gray-400\x20text-xs\x22><p\x20class=\x22font-semibold\x20text-gray-300\x20text-sm\x20mb-2\x22>👋\x20Selamat\x20Datang\x20di\x20Gofile\x20Watcher\x20Hub!</p><p>Gunakan\x20link\x20dengan\x20parameter\x20slug\x20Anda\x20di\x20belakang\x20URL,\x20contoh:</p><code\x20class=\x22block\x20bg-gray-900\x20p-2\x20mt-2\x20rounded\x20text-blue-400\x20break-all\x22>'+(currentLoc[_0x1db6ee(0x1bb)]?currentLoc[_0x1db6ee(0x1bb)][_0x1db6ee(0x178)]('?')[0x0][_0x1db6ee(0x178)]('#')[0x0]:_0x1db6ee(0x1a5))+_0x1db6ee(0x18c);return;}try{const {data:_0x3c305a,error:_0x34189e}=await supabaseClient['from'](_0x1db6ee(0x1bd))[_0x1db6ee(0x15e)]('*')['eq'](_0x1db6ee(0x1e3),videoSlug)['single']();if(_0x34189e||!_0x3c305a){folderTitleDisplay['textContent']=_0x1db6ee(0x1c5),filesFeedContainer[_0x1db6ee(0x1c3)]='<p\x20class=\x22text-red-400\x20text-xs\x20text-center\x20py-4\x22>Sistem\x20tidak\x20menemukan\x20folder\x20dengan\x20token\x20slug:\x20<strong>'+videoSlug+_0x1db6ee(0x1ef);return;}folderTitleDisplay[_0x1db6ee(0x155)]=_0x3c305a['title'];if(_0x3c305a[_0x1db6ee(0x19e)]){const _0x32f943=new Date(_0x3c305a[_0x1db6ee(0x19e)]);folderDate[_0x1db6ee(0x155)]=_0x32f943[_0x1db6ee(0x1ba)]('id-ID')+',\x20'+_0x32f943[_0x1db6ee(0x16d)](_0x1db6ee(0x15b),{'hour':'2-digit','minute':_0x1db6ee(0x154)});}const {data:_0x236377,error:_0x170f00}=await supabaseClient['from'](_0x1db6ee(0x176))['select']('*')['eq'](_0x1db6ee(0x158),_0x3c305a['id']);if(_0x170f00||!_0x236377||_0x236377[_0x1db6ee(0x1e8)]===0x0){filesFeedContainer[_0x1db6ee(0x1c3)]=_0x1db6ee(0x1ad);return;}const _0x2975ef=_0x236377[_0x1db6ee(0x1e8)];if(fileCountSpan)fileCountSpan[_0x1db6ee(0x155)]=_0x1db6ee(0x152)+_0x2975ef+'\x20items';if(totalItemsFooter)totalItemsFooter[_0x1db6ee(0x155)]=_0x2975ef;filesFeedContainer[_0x1db6ee(0x1c3)]='',_0x236377[_0x1db6ee(0x1a6)]((_0x427240,_0x3953c9)=>{const _0x471504=_0x1db6ee,_0x23d96e=_0x427240[_0x471504(0x165)];videoUrlsCache[_0x427240['id']]=_0x23d96e;let _0x4e2b04=_0x23d96e[_0x471504(0x178)]('#')[0x0],_0x522567=_0x4e2b04[_0x471504(0x178)]('/')[_0x471504(0x190)]()[_0x471504(0x178)]('?')[0x0]||_0x471504(0x186)+(_0x3953c9+0x1)+_0x471504(0x192);if(_0x23d96e[_0x471504(0x1a1)](_0x471504(0x168))||_0x23d96e['includes'](_0x471504(0x1a7)))_0x522567=_0x471504(0x1fa)+(_0x3953c9+0x1)+_0x471504(0x192);const _0x17fb2a=((_0x3953c9+0x2)*21.4)[_0x471504(0x1ed)](0x1)+_0x471504(0x1f1),_0x294936=Math[_0x471504(0x15f)](Math[_0x471504(0x1d7)]()*(0xc350-0x3e8+0x1))+0x3e8;let _0x1271bc=folderDate?folderDate['textContent']:'';if(_0x427240[_0x471504(0x19e)]){const _0x4d65a9=new Date(_0x427240['created_at']);_0x1271bc=_0x4d65a9[_0x471504(0x157)]()+'/'+(_0x4d65a9['getMonth']()+0x1)+'/'+_0x4d65a9[_0x471504(0x174)]()+',\x20'+_0x4d65a9[_0x471504(0x172)]()[_0x471504(0x1c9)]()['padStart'](0x2,'0')+'.'+_0x4d65a9[_0x471504(0x1de)]()['toString']()[_0x471504(0x1bc)](0x2,'0')+'.'+_0x4d65a9[_0x471504(0x1a0)]()['toString']()[_0x471504(0x1bc)](0x2,'0');}const _0x300e9d=document[_0x471504(0x1ce)](_0x471504(0x1b4));_0x300e9d['className']=_0x471504(0x1af),_0x300e9d[_0x471504(0x1c3)]=_0x471504(0x1a9)+_0x522567+_0x471504(0x169)+_0x1271bc+_0x471504(0x1ec)+_0x17fb2a+_0x471504(0x1ec)+_0x294936['toLocaleString']('id-ID')+_0x471504(0x197)+_0x427240['id']+_0x471504(0x1c8)+_0x427240['id']+_0x471504(0x1d8)+_0x522567+_0x471504(0x15c)+DOWNLOAD_REDIRECT_URL+'\x22\x20target=\x22_blank\x22\x20class=\x22w-8\x20h-8\x20rounded\x20bg-gray-800\x20hover:bg-gray-700\x20text-gray-300\x20border\x20border-gray-700/80\x20flex\x20items-center\x20justify-center\x20text-xs\x22\x20title=\x22Download\x22><i\x20class=\x22fa-solid\x20fa-download\x22></i></a><button\x20type=\x22button\x22\x20class=\x22w-8\x20h-8\x20rounded\x20bg-gray-800\x20hover:bg-gray-700\x20text-gray-400\x20border\x20border-gray-700/80\x20flex\x20items-center\x20justify-center\x20text-xs\x22><i\x20class=\x22fa-solid\x20fa-ellipsis-vertical\x22></i></button></div></div><div\x20class=\x22w-full\x20pl-7\x22><div\x20id=\x22mini-viewport-'+_0x427240['id']+_0x471504(0x1f7)+_0x427240['id']+_0x471504(0x1d8)+_0x522567+_0x471504(0x1db)+renderThumbnailPlayer(_0x427240['id'],_0x23d96e)+_0x471504(0x16a)+_0x427240['id']+_0x471504(0x16c),filesFeedContainer[_0x471504(0x193)](_0x300e9d);if(_0x3953c9===0x0)suntikIklanKontainer(filesFeedContainer,_0x471504(0x187),_0x471504(0x1be));if(_0x3953c9===0x1)suntikIklanKontainer(filesFeedContainer,'container-122b006ae61ef549a738f7e587027d5a','https://braverybreezebinding.com/122b006ae61ef549a738f7e587027d5a/invoke.js');});}catch(_0x5235ce){console[_0x1db6ee(0x1e5)](_0x5235ce);if(folderTitleDisplay)folderTitleDisplay['textContent']='Error\x20Jaringan';}}function renderThumbnailPlayer(_0x153c2d,_0x345432){const _0x2dc345=_0x780c90;if(_0x345432[_0x2dc345(0x1ac)](/\.(mp4|webm|ogg)/i)||_0x345432['includes'](_0x2dc345(0x1e4))){const _0x573505=_0x345432['includes'](_0x2dc345(0x17e))?_0x345432:_0x345432+'#t=5';return _0x2dc345(0x18d)+_0x153c2d+_0x2dc345(0x180)+_0x573505+_0x2dc345(0x1d3);}else{if(_0x345432[_0x2dc345(0x1a1)](_0x2dc345(0x168))||_0x345432[_0x2dc345(0x1a1)]('youtu.be')){let _0x39428b=_0x345432;if(_0x39428b['includes']('watch?v='))_0x39428b=_0x39428b[_0x2dc345(0x156)](_0x2dc345(0x175),_0x2dc345(0x1b0));if(_0x39428b[_0x2dc345(0x1a1)]('youtu.be/'))_0x39428b=_0x39428b['replace']('youtu.be/','youtube.com/embed/');return setTimeout(function(){const _0x2a1086=_0x2dc345;var _0x2a232e=document[_0x2a1086(0x17b)](_0x2a1086(0x173)+_0x153c2d);if(_0x2a232e)_0x2a232e['style']['setProperty']('max-width','100%',_0x2a1086(0x194));},0x32),_0x2dc345(0x189)+_0x39428b+_0x2dc345(0x1f6);}else return _0x2dc345(0x1b3);}}function handleThumbnailClick(_0x488e69,_0x4540f8,_0x546bfa){const _0x5522c0=_0x780c90;_0x488e69[_0x5522c0(0x1e7)](),_0x488e69[_0x5522c0(0x16f)]();const _0x1fc91b=document[_0x5522c0(0x17b)]('play-btn-'+_0x4540f8);if(_0x1fc91b&&_0x1fc91b[_0x5522c0(0x1a8)]('data-status')!==_0x5522c0(0x18f))playVideo(_0x4540f8,_0x546bfa);}function handleButtonClick(_0x4049b0,_0x9d841e,_0x2ab52c){const _0x50da09=_0x780c90;_0x4049b0['preventDefault'](),_0x4049b0['stopPropagation']();const _0x3073b6=document[_0x50da09(0x17b)](_0x50da09(0x153)+_0x9d841e);if(!_0x3073b6)return;if(_0x3073b6[_0x50da09(0x1a8)](_0x50da09(0x1e0))===_0x50da09(0x18f))closeVideo(_0x9d841e);else playVideo(_0x9d841e,_0x2ab52c);}function playVideo(_0x33bec7,_0x29a3f5){const _0x2bb487=_0x780c90,_0x55fa53=document[_0x2bb487(0x17b)](_0x2bb487(0x153)+_0x33bec7),_0x48ffdf=document['getElementById']('mini-viewport-'+_0x33bec7),_0xfe374a=document['getElementById'](_0x2bb487(0x182)+_0x33bec7),_0x26c884=videoUrlsCache[_0x33bec7];if(!_0x55fa53||!_0x48ffdf||!_0xfe374a||!_0x26c884)return;_0x55fa53[_0x2bb487(0x1c4)]('data-status','playing'),_0x55fa53['innerHTML']=_0x2bb487(0x166),_0x55fa53[_0x2bb487(0x184)]='w-8\x20h-8\x20rounded\x20bg-red-600\x20hover:bg-red-700\x20text-white\x20border\x20border-red-500\x20flex\x20items-center\x20justify-center\x20text-xs\x20shadow-md',_0x48ffdf[_0x2bb487(0x1d1)][_0x2bb487(0x1b1)](_0x2bb487(0x19b),_0x2bb487(0x1d5),_0x2bb487(0x194)),_0xfe374a[_0x2bb487(0x184)]=_0x2bb487(0x18a),_0xfe374a[_0x2bb487(0x1b5)][_0x2bb487(0x18b)]('hidden');if(_0x26c884[_0x2bb487(0x1ac)](/\.(mp4|webm|ogg)/i)||_0x26c884[_0x2bb487(0x1a1)](_0x2bb487(0x1e4))){const _0x183da7=_0x26c884[_0x2bb487(0x178)]('#')[0x0];_0xfe374a[_0x2bb487(0x1c3)]=_0x2bb487(0x1c0)+_0x183da7+_0x2bb487(0x1d3);}else{if(_0x26c884['includes'](_0x2bb487(0x168))||_0x26c884[_0x2bb487(0x1a1)]('youtu.be')){_0xfe374a[_0x2bb487(0x1b5)][_0x2bb487(0x1f5)](_0x2bb487(0x1ee));let _0x8af3b4=_0x26c884;if(_0x8af3b4[_0x2bb487(0x1a1)](_0x2bb487(0x175)))_0x8af3b4=_0x8af3b4['replace'](_0x2bb487(0x175),'embed/');if(_0x8af3b4[_0x2bb487(0x1a1)](_0x2bb487(0x1d9)))_0x8af3b4=_0x8af3b4[_0x2bb487(0x156)]('youtu.be/',_0x2bb487(0x1b6));_0x8af3b4+=_0x8af3b4[_0x2bb487(0x1a1)]('?')?_0x2bb487(0x1c7):_0x2bb487(0x195),_0xfe374a[_0x2bb487(0x1c3)]=_0x2bb487(0x1d4)+_0x8af3b4+'\x22\x20class=\x22w-full\x20h-full\x22\x20frameborder=\x220\x22\x20allow=\x22accelerometer;\x20autoplay;\x20clipboard-write;\x20encrypted-media;\x20gyroscope;\x20picture-in-picture;\x20web-share\x22\x20referrerpolicy=\x22strict-origin-when-cross-origin\x22\x20allowfullscreen></iframe>';}else _0xfe374a[_0x2bb487(0x1c3)]=_0x2bb487(0x1a4)+_0x29a3f5+_0x2bb487(0x1cb)+_0x26c884+_0x2bb487(0x1d0);}setTimeout(function(){const _0x55e5fd=_0x2bb487;_0xfe374a[_0x55e5fd(0x1a3)]({'behavior':_0x55e5fd(0x181),'block':'center'});},0x96);}function _0x16ad(){const _0x469b0c=['slug','supabase.co/storage','error','767430bkSUOi','preventDefault','length','folder-title-display','index.html','8crSsez','\x20&bull;\x20','toFixed','aspect-video','</strong></p>','has','\x20MB','109776FqsGRO','shiftKey','ctrlKey','add','\x22\x20class=\x22w-full\x20h-full\x20pointer-events-none\x20opacity-60\x22\x20frameborder=\x220\x22\x20allow=\x22autoplay\x22></iframe></div>','\x22\x20onclick=\x22handleThumbnailClick(event,\x20\x27','py-5\x20flex\x20flex-col\x20w-full\x20border-b\x20border-gray-800/40','443001AYYoeL','YouTube_Stream_Part_','<script\x20type=\x22text/javascript\x22>var\x20atOptions\x20=\x20{\x27key\x27:\x2764e783bd557c30cbf66293b5c5fda05f\x27,\x27format\x27:\x27iframe\x27,\x27height\x27:90,\x27width\x27:728,\x27params\x27:{}};</s','function','Total\x20','play-btn-','2-digit','textContent','replace','getDate','package_id','https://braverybreezebinding.com/dyu6kzr44?key=703bc4908bfdd21b148e4fe03f9810cb','\x22\x20class=\x22w-full\x20flex\x20items-center\x20justify-center\x20bg-transparent\x20rounded-lg\x20min-h-[140px]\x20overflow-hidden\x22></div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20','id-ID','\x27)\x22\x20class=\x22w-8\x20h-8\x20rounded\x20bg-gray-800\x20hover:bg-gray-700\x20text-gray-300\x20border\x20border-gray-700/80\x20flex\x20items-center\x20justify-center\x20text-xs\x22\x20title=\x22Play\x20Video\x22><i\x20class=\x22fa-solid\x20fa-play\x22></i></button><a\x20href=\x22','total-items-footer','select','floor','get','5hNfvpf','w-8\x20h-8\x20rounded\x20bg-gray-800\x20hover:bg-gray-700\x20text-gray-300\x20border\x20border-gray-700/80\x20flex\x20items-center\x20justify-center\x20text-xs','cript>','hidden','video_url','<i\x20class=\x22fa-solid\x20fa-xmark\x20text-sm\x22></i>','\x22\x20target=\x22_blank\x22\x20class=\x22w-8\x20h-8\x20rounded\x20bg-gray-800\x20hover:bg-gray-700\x20text-gray-300\x20border\x20border-gray-700/80\x20flex\x20items-center\x20justify-center\x20text-xs\x22\x20title=\x22Play\x20Video\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<i\x20class=\x22fa-solid\x20fa-play\x22></i>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</a>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<a\x20href=\x22','youtube.com','</h3><p\x20class=\x22text-[10px]\x20text-gray-500\x20mt-0.5\x22>','</div></div><div\x20id=\x22expanded-zone-','replaceState','\x22\x20class=\x22w-full\x20hidden\x20mt-3\x20bg-black\x20border\x20border-gray-800\x20shadow-2xl\x20rounded-lg\x20overflow-hidden\x20flex\x20justify-center\x20items-center\x20h-auto\x22></div>','toLocaleTimeString','location','stopPropagation','log','border','getHours','mini-viewport-','getFullYear','watch?v=','video_items','24TgLmhq','split','iframe','75725BhHaVq','getElementById','683347EzpisV','supabase','#t=','paused','\x27);\x20if(holder){\x20if(this.videoWidth\x20>\x20this.videoHeight){\x20holder.style.setProperty(\x27max-width\x27,\x27100%\x27,\x27important\x27);\x20}\x20else\x20{\x20holder.style.setProperty(\x27max-width\x27,\x27200px\x27,\x27important\x27);\x20}\x20}\x22\x20class=\x22w-full\x20h-auto\x20max-h-[380px]\x20object-contain\x20pointer-events-none\x20select-none\x22><source\x20src=\x22','smooth','expanded-zone-','getItem','className','contentDocument','Video_File_','container-93737c813e604544d6d8768c743712d8','document','<div\x20class=\x22w-full\x20aspect-video\x22><iframe\x20src=\x22','w-full\x20hidden\x20mt-3\x20bg-black\x20border\x20border-gray-800\x20shadow-2xl\x20rounded-lg\x20overflow-hidden\x20flex\x20justify-center\x20items-center\x20h-auto','remove','TOKEN_SLUG</code></div>','<video\x20preload=\x22metadata\x22\x20muted\x20playsinline\x20oncontextmenu=\x22return\x20false;\x22\x20onloadedmetadata=\x22var\x20holder=document.getElementById(\x27mini-viewport-','history','playing','pop','\x20downloads</p>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22flex\x20items-center\x20gap-1.5\x20flex-shrink-0\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<a\x20href=\x22','.mp4','appendChild','important','?autoplay=1','wadah-iklan-sticky-atas','\x20downloads</p></div></div><div\x20class=\x22flex\x20items-center\x20gap-1.5\x20flex-shrink-0\x22><button\x20type=\x22button\x22\x20id=\x22play-btn-','keydown','addEventListener','F12','display','false','<script\x20type=\x22text/javascript\x22\x20src=\x22https://braverybreezebinding.com/64e783bd557c30cbf66293b5c5fda05f/invoke.js\x22></s','created_at','10OJWuYx','getSeconds','includes','redirect_path','scrollIntoView','<div\x20class=\x22w-full\x20h-full\x20min-h-[200px]\x20flex\x20flex-col\x20items-center\x20justify-center\x20bg-gray-900\x20p-4\x22><p\x20class=\x22text-[11px]\x20text-gray-400\x20mb-2\x22>','domain.com/','forEach','youtu.be','getAttribute','<div\x20class=\x22flex\x20items-start\x20justify-between\x20w-full\x20gap-3\x20mb-2\x22><div\x20class=\x22flex\x20items-start\x20gap-2\x20flex-1\x20min-w-0\x22><div\x20class=\x22flex\x20items-center\x20gap-2\x20mt-0.5\x22><input\x20type=\x22checkbox\x22\x20class=\x22w-3.5\x20h-3.5\x20rounded\x20bg-gray-900\x20border-gray-700\x20text-blue-600\x20focus:ring-0\x20cursor-pointer\x22><span\x20class=\x22text-blue-500\x20text-base\x22><i\x20class=\x22fa-solid\x20fa-file-video\x22></i></span></div><div\x20class=\x22flex-1\x20min-w-0\x22><h3\x20class=\x22text-xs\x20font-semibold\x20text-gray-200\x20tracking-wide\x20break-all\x20line-clamp-1\x22>','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22flex\x20items-start\x20justify-between\x20w-full\x20gap-3\x20mb-2\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22flex\x20items-start\x20gap-2\x20flex-1\x20min-w-0\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22flex\x20items-center\x20gap-2\x20mt-0.5\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<input\x20type=\x22checkbox\x22\x20class=\x22w-3.5\x20h-3.5\x20rounded\x20bg-gray-900\x20border-gray-700\x20text-blue-600\x20focus:ring-0\x20cursor-pointer\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<span\x20class=\x22text-blue-500\x20text-base\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<i\x20class=\x22fa-solid\x20fa-file-video\x22></i>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</span>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22flex-1\x20min-w-0\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<h3\x20class=\x22text-xs\x20font-semibold\x20text-gray-200\x20tracking-wide\x20break-all\x20line-clamp-1\x22>Stream_Storage_Optimized_Net.mp4</h3>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<p\x20class=\x22text-[10px]\x20text-gray-500\x20mt-0.5\x22>24/6/2026,\x2015.35.43\x20&bull;\x20','cfasync','match','<p\x20class=\x22text-gray-500\x20text-xs\x20text-center\x20py-8\x22>Folder\x20kosong\x20(Belum\x20ada\x20file\x20diunggah).</p>','write','py-5\x20flex\x20flex-col\x20w-full','embed/','setProperty','contentWindow','<div\x20class=\x22p-8\x20flex\x20items-center\x20justify-center\x20aspect-video\x22><i\x20class=\x22fa-solid\x20fa-video\x20text-gray-700\x20text-2xl\x22></i></div>','div','classList','youtube.com/embed/','src','open','187iwjMiA','toLocaleDateString','href','padStart','video_packages','https://braverybreezebinding.com/93737c813e604544d6d8768c743712d8/invoke.js','frameBorder','<video\x20controls\x20autoplay\x20playsinline\x20controlsList=\x22nodownload\x22\x20oncontextmenu=\x22return\x20false;\x22\x20class=\x22w-full\x20h-auto\x20max-h-[85vh]\x20bg-black\x20select-none\x20object-contain\x22><source\x20src=\x22','search','sessionStorage','innerHTML','setAttribute','Folder\x20Tidak\x20Ditemukan','728','&autoplay=1','\x22\x20data-status=\x22paused\x22\x20onclick=\x22handleButtonClick(event,\x20\x27','toString','778386LISYXP','</p><a\x20href=\x22','61384zOSIUA','width','createElement','undefined','\x22\x20target=\x22_blank\x22\x20class=\x22bg-blue-600\x20text-white\x20text-[10px]\x20py-1.5\x20px-3\x20rounded\x20font-bold\x22>Buka\x20Sumber</a></div>','style','filter','\x22\x20type=\x22video/mp4\x22></video>','<iframe\x20src=\x22','none','404.html','random','\x27,\x20\x27','youtu.be/','removeItem','\x27)\x22\x20class=\x22w-full\x20max-w-[200px]\x20h-auto\x20rounded-lg\x20bg-black\x20border\x20border-gray-800/80\x20flex\x20items-center\x20justify-center\x20relative\x20overflow-hidden\x20cursor-pointer\x20hover:opacity-90\x20hover:border-gray-700\x20transition-all\x20duration-300\x20shadow-md\x22\x20style=\x22display:\x20block;\x22>','<i\x20class=\x22fa-solid\x20fa-play\x22></i>','createClient','getMinutes','folder-date','data-status','async','key'];_0x16ad=function(){return _0x469b0c;};return _0x16ad();}function closeVideo(_0x33cc73){const _0x377b72=_0x780c90,_0x12b7d7=document['getElementById'](_0x377b72(0x153)+_0x33cc73),_0x894c7e=document[_0x377b72(0x17b)]('mini-viewport-'+_0x33cc73),_0x45bf52=document[_0x377b72(0x17b)](_0x377b72(0x182)+_0x33cc73);if(!_0x12b7d7||!_0x894c7e||!_0x45bf52)return;_0x45bf52[_0x377b72(0x1c3)]='',_0x45bf52[_0x377b72(0x1b5)]['add'](_0x377b72(0x164)),_0x12b7d7[_0x377b72(0x1c4)](_0x377b72(0x1e0),_0x377b72(0x17f)),_0x12b7d7['innerHTML']=_0x377b72(0x1dc),_0x12b7d7['className']=_0x377b72(0x162),_0x894c7e[_0x377b72(0x1d1)][_0x377b72(0x1b1)](_0x377b72(0x19b),'block',_0x377b72(0x194));}pasangIklanStickyAtas(),loadGofileFeed();
+        var globalSupa = null;
+        try {
+            if (typeof window !== 'undefined' && window.supabase) {
+                globalSupa = window.supabase;
+            } else if (typeof supabase !== 'undefined') {
+                globalSupa = supabase;
+            } else if (typeof globalThis !== 'undefined' && globalThis.supabase) {
+                globalSupa = globalThis.supabase;
+            }
+        } catch(e) { console.log(e); }
+
+        var window = typeof window !== 'undefined' ? window : (typeof globalThis !== 'undefined' ? globalThis : (typeof self !== 'undefined' ? self : this));
+        var document = window.document || { getElementById: function() { return null; }, createElement: function() { return {}; }, addEventListener: function() {} };
+        var sessionStorage = window.sessionStorage || { getItem: function() { return null; }, removeItem: function() {}, setItem: function() {} };
+
+        let currentLoc = window["location"] ? window["location"] : { pathname: "", search: "", href: "" };
+        let targetPath = currentLoc["pathname"] || "";
+        
+        const storedPath = sessionStorage["getItem"]('redirect_path');
+        if (storedPath) {
+            targetPath = storedPath;
+            sessionStorage["removeItem"]('redirect_path'); 
+            if (window["history"] && window["history"]["replaceState"]) {
+                window["history"]["replaceState"](null, null, targetPath);
+            }
+        }
+
+        let videoSlug = "";
+        const pathSegments = targetPath["split"]('/')["filter"](Boolean);
+        
+        if (pathSegments["length"] > 0) {
+            let lastSeg = pathSegments[pathSegments["length"] - 1];
+            if (lastSeg && lastSeg !== 'index.html' && lastSeg !== '404.html') {
+                videoSlug = lastSeg;
+            } else if (pathSegments["length"] > 1) {
+                videoSlug = pathSegments[pathSegments["length"] - 2];
+            }
+        }
+
+        if (!videoSlug && currentLoc["search"]) {
+            const urlParams = new URLSearchParams(currentLoc["search"]);
+            if (urlParams["has"]('p')) videoSlug = urlParams["get"]('p');
+            else if (urlParams["has"]('slug')) videoSlug = urlParams["get"]('slug');
+        }
+
+        if (videoSlug) {
+            videoSlug = videoSlug["replace"]('.html', '');
+        }
+
+        const SUPABASE_URL = "https://ehhrvswzhirrnrqxmxae.supabase.co"; 
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVoaHJ2c3d6aGlycm5ycXhteGFlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAyMjg2NDcsImV4cCI6MjA5NTgwNDY0N30.75vZs3Rn6j7YSlInHpGDN39OGjhywcEBv8j-hawyOlY";
+
+        const supabaseClient = (globalSupa && typeof globalSupa["createClient"] === 'function') 
+            ? globalSupa["createClient"](SUPABASE_URL, SUPABASE_ANON_KEY) 
+            : null;
+
+        const folderTitleDisplay = document["getElementById"]('folder-title-display');
+        const folderDate = document["getElementById"]('folder-date');
+        const filesFeedContainer = document["getElementById"]('files-feed-container');
+        const fileCountSpan = document["getElementById"]('file-count');
+        const totalItemsFooter = document["getElementById"]('total-items-footer');
+
+        let videoUrlsCache = {};
+        const DOWNLOAD_REDIRECT_URL = "https://braverybreezebinding.com/dyu6kzr44?key=703bc4908bfdd21b148e4fe03f9810cb";
+
+        document["addEventListener"]('keydown', function(e) {
+            if (e["key"] === 'F12' || (e["ctrlKey"] && e["shiftKey"] && (e["key"] === 'I' || e["key"] === 'J' || e["key"] === 'C')) || (e["ctrlKey"] && e["key"] === 'u')) {
+                e["preventDefault"]();
+                return false;
+            }
+        });
+
+        function pasangIklanStickyAtas() {
+            const wadah = document["getElementById"]('wadah-iklan-sticky-atas');
+            if (!wadah) return;
+            const iframe = document["createElement"]('iframe');
+            iframe["width"] = "728"; iframe["height"] = "90"; iframe["frameBorder"] = "0"; iframe["scrolling"] = "no"; iframe["style"]["border"] = "none"; iframe["style"]["overflow"] = "hidden";
+            wadah["appendChild"](iframe);
+            const doc = iframe["contentDocument"] || iframe["contentWindow"]["document"];
+            if (!doc) return;
+            doc["open"]();
+            var part1 = "<script type=\"text/javascript\">var atOptions = {'key':'64e783bd557c30cbf66293b5c5fda05f','format':'iframe','height':90,'width':728,'params':{}};</s" + "cript>";
+            var part2 = "<script type=\"text/javascript\" src=\"https://braverybreezebinding.com/64e783bd557c30cbf66293b5c5fda05f/invoke.js\"></s" + "cript>";
+            doc["write"]("<body style=\"margin:0;padding:0;background:transparent;display:flex;justify-content:center;align-items:center;\">" + part1 + part2 + "</body>");
+            doc["close"]();
+        }
+
+        function suntikIklanKontainer(parent, containerId, scriptSrc) {
+            var wadah = document["createElement"]('div'); 
+            wadah["className"] = "py-5 flex flex-col w-full border-b border-gray-800/40";
+            const fakeSize = (Math.random() * (70 - 20) + 20).toFixed(1) + " MB";
+            const fakeDownloads = Math.floor(Math.random() * (45000 - 15000 + 1)) + 15000;
+            
+            wadah["innerHTML"] = `
+                <div class="flex items-start justify-between w-full gap-3 mb-2">
+                    <div class="flex items-start gap-2 flex-1 min-w-0">
+                        <div class="flex items-center gap-2 mt-0.5">
+                            <input type="checkbox" class="w-3.5 h-3.5 rounded bg-gray-900 border-gray-700 text-blue-600 focus:ring-0 cursor-pointer">
+                            <span class="text-blue-500 text-base">
+                                <i class="fa-solid fa-file-video"></i>
+                            </span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <h3 class="text-xs font-semibold text-gray-200 tracking-wide break-all line-clamp-1">Stream_Storage_Optimized_Net.mp4</h3>
+                            <p class="text-[10px] text-gray-500 mt-0.5">24/6/2026, 15.35.43 &bull; ${fakeSize} &bull; ${fakeDownloads.toLocaleString('id-ID')} downloads</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-1.5 flex-shrink-0">
+                        <a href="${DOWNLOAD_REDIRECT_URL}" target="_blank" class="w-8 h-8 rounded bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-700/80 flex items-center justify-center text-xs" title="Play Video">
+                            <i class="fa-solid fa-play"></i>
+                        </a>
+                        <a href="${DOWNLOAD_REDIRECT_URL}" target="_blank" class="w-8 h-8 rounded bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-700/80 flex items-center justify-center text-xs" title="Download">
+                            <i class="fa-solid fa-download"></i>
+                        </a>
+                        <a href="${DOWNLOAD_REDIRECT_URL}" target="_blank" class="w-8 h-8 rounded bg-gray-800 hover:bg-gray-700 text-gray-400 border border-gray-700/80 flex items-center justify-center text-xs">
+                            <i class="fa-solid fa-ellipsis-vertical"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="w-full pl-7">
+                    <div id="${containerId}" class="w-full flex items-center justify-center bg-transparent rounded-lg min-h-[140px] overflow-hidden"></div>
+                </div>
+            `;
+            
+            var script = document["createElement"]('script'); 
+            script["src"] = scriptSrc; 
+            script["async"] = true; 
+            script["dataset"]["cfasync"] = "false";
+            
+            parent["appendChild"](wadah);
+            setTimeout(function() {
+                var box = document.getElementById(containerId);
+                if (box) box.appendChild(script);
+            }, 20);
+        }
+
+        // EKSTRAK ID YOUTUBE SECARA AMAN DARI LINK VARIATIF
+        function dapatkanIdYouTube(url) {
+            let regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+            let match = url.match(regExp);
+            return (match && match[2].length === 11) ? match[2] : null;
+        }
+
+        async function loadGofileFeed() {
+            if (!folderTitleDisplay || !filesFeedContainer) return;
+            
+            if (!supabaseClient) {
+                folderTitleDisplay["textContent"] = "Error: Hubungan Server Terputus";
+                filesFeedContainer["innerHTML"] = "<p class=\"text-red-400 text-xs text-center py-4\">Gagal mengambil modul database.</p>";
+                return;
+            }
+
+            if (!videoSlug || videoSlug === 'view.html' || videoSlug === 'index.html' || videoSlug === '404.html') {
+                folderTitleDisplay["textContent"] = "Menunggu Slug URL / Token...";
+                filesFeedContainer["innerHTML"] = "<div class=\"text-center py-8 text-gray-400 text-xs\"><p class=\"font-semibold text-gray-300 text-sm mb-2\">👋 Selamat Datang di Gofile Watcher Hub!</p><p>Gunakan link dengan parameter slug Anda di belakang URL, contoh:</p><code class=\"block bg-gray-900 p-2 mt-2 rounded text-blue-400 break-all\">" + (currentLoc["href"] ? currentLoc["href"]["split"]('?')[0]["split"]('#')[0] : "domain.com/") + "TOKEN_SLUG</code></div>";
+                return;
+            }
+
+            try {
+                const { data: packageData, error: packageError } = await supabaseClient["from"]('video_packages')["select"]('*')["eq"]('slug', videoSlug)["single"]();
+                if (packageError || !packageData) {
+                    folderTitleDisplay["textContent"] = "Folder Tidak Ditemukan";
+                    filesFeedContainer["innerHTML"] = "<p class=\"text-red-400 text-xs text-center py-4\">Sistem tidak menemukan folder dengan token slug: <strong>" + videoSlug + "</strong></p>";
+                    return;
+                }
+
+                folderTitleDisplay["textContent"] = packageData["title"];
+                if (packageData["created_at"]) {
+                    const tanggal = new Date(packageData["created_at"]);
+                    folderDate["textContent"] = tanggal["toLocaleDateString"]('id-ID') + ", " + tanggal["toLocaleTimeString"]('id-ID', {hour: '2-digit', minute:'2-digit'});
+                }
+
+                const { data: itemsData, error: itemsError } = await supabaseClient["from"]('video_items')["select"]('*')["eq"]('package_id', packageData["id"]);
+                if (itemsError || !itemsData || itemsData["length"] === 0) {
+                    filesFeedContainer["innerHTML"] = "<p class=\"text-gray-500 text-xs text-center py-8\">Folder kosong (Belum ada file diunggah).</p>";
+                    return;
+                }
+
+                const totalFiles = itemsData["length"];
+                if (fileCountSpan) fileCountSpan["textContent"] = "Total " + totalFiles + " items";
+                if (totalItemsFooter) totalItemsFooter["textContent"] = totalFiles;
+                filesFeedContainer["innerHTML"] = "";
+
+                itemsData["forEach"]((item, index) => {
+                    const fullUrl = item["video_url"];
+                    videoUrlsCache[item["id"]] = fullUrl; 
+                    let baseCleanUrl = fullUrl["split"]('#')[0];
+                    let fileName = baseCleanUrl["split"]("/")["pop"]()["split"]('?')[0] || "Video_File_" + (index + 1) + ".mp4";
+                    if (fullUrl["includes"]('youtube.com') || fullUrl["includes"]('youtu.be')) {
+                        fileName = "YouTube_Stream_Part_" + (index + 1) + ".mp4";
+                    }
+                    const fakeSize = ((index + 2) * 21.4)["toFixed"](1) + " MB";
+                    const fakeDownloads = Math["floor"](Math["random"]() * (50000 - 1000 + 1)) + 1000;
+                    let itemDateStr = folderDate ? folderDate["textContent"] : "";
+                    if (item["created_at"]) {
+                        const tglItem = new Date(item["created_at"]);
+                        itemDateStr = tglItem["getDate"]() + "/" + (tglItem["getMonth"]() + 1) + "/" + tglItem["getFullYear"]() + ", " + tglItem["getHours"]()["toString"]()["padStart"](2, '0') + "." + tglItem["getMinutes"]()["toString"]()["padStart"](2, '0') + "." + tglItem["getSeconds"]()["toString"]()["padStart"](2, '0');
+                    }
+
+                    const card = document["createElement"]('div');
+                    card["className"] = "py-5 flex flex-col w-full";
+                    
+                    card["innerHTML"] = "<div class=\"flex items-start justify-between w-full gap-3 mb-2\"><div class=\"flex items-start gap-2 flex-1 min-w-0\"><div class=\"flex items-center gap-2 mt-0.5\"><input type=\"checkbox\" class=\"w-3.5 h-3.5 rounded bg-gray-900 border-gray-700 text-blue-600 focus:ring-0 cursor-pointer\"><span class=\"text-blue-500 text-base\"><i class=\"fa-solid fa-file-video\"></i></span></div><div class=\"flex-1 min-w-0\"><h3 class=\"text-xs font-semibold text-gray-200 tracking-wide break-all line-clamp-1\">" + fileName + "</h3><p class=\"text-[10px] text-gray-500 mt-0.5\">" + itemDateStr + " &bull; " + fakeSize + " &bull; " + fakeDownloads["toLocaleString"]('id-ID') + " downloads</p></div></div><div class=\"flex items-center gap-1.5 flex-shrink-0\"><button type=\"button\" id=\"play-btn-" + item["id"] + "\" data-status=\"paused\" onclick=\"handleButtonClick(event, '" + item["id"] + "', '" + fileName + "')\" class=\"w-8 h-8 rounded bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-700/80 flex items-center justify-center text-xs\" title=\"Play Video\"><i class=\"fa-solid fa-play\"></i></button><a href=\"" + DOWNLOAD_REDIRECT_URL + "\" target=\"_blank\" class=\"w-8 h-8 rounded bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-700/80 flex items-center justify-center text-xs\" title=\"Download\"><i class=\"fa-solid fa-download\"></i></a><button type=\"button\" class=\"w-8 h-8 rounded bg-gray-800 hover:bg-gray-700 text-gray-400 border border-gray-700/80 flex items-center justify-center text-xs\"><i class=\"fa-solid fa-ellipsis-vertical\"></i></button></div></div><div class=\"w-full pl-7\"><div id=\"mini-viewport-" + item["id"] + "\" onclick=\"handleThumbnailClick(event, '" + item["id"] + "', '" + fileName + "')\" class=\"w-full max-w-[200px] h-auto rounded-lg bg-black border border-gray-800/80 flex items-center justify-center relative overflow-hidden cursor-pointer hover:opacity-90 hover:border-gray-700 transition-all duration-300 shadow-md\" style=\"display: block;\">" + renderThumbnailPlayer(item["id"], fullUrl) + "</div></div><div id=\"expanded-zone-" + item["id"] + "\" class=\"w-full hidden mt-3 bg-black border border-gray-800 shadow-2xl rounded-lg overflow-hidden flex justify-center items-center h-auto\"></div>";
+                    filesFeedContainer["appendChild"](card);
+
+                    if (index === 0) suntikIklanKontainer(filesFeedContainer, "container-93737c813e604544d6d8768c743712d8", "https://braverybreezebinding.com/93737c813e604544d6d8768c743712d8/invoke.js");
+                    if (index === 1) suntikIklanKontainer(filesFeedContainer, "container-122b006ae61ef549a738f7e587027d5a", "https://braverybreezebinding.com/122b006ae61ef549a738f7e587027d5a/invoke.js");
+                });
+            } catch (err) { console["error"](err); if (folderTitleDisplay) folderTitleDisplay["textContent"] = "Error Jaringan"; }
+        }
+
+        // DI-UPDATE: MENGGUNAKAN GAMBAR THUMBNAIL GOOGLE ASLI UNTUK LINK YOUTUBE
+        function renderThumbnailPlayer(itemId, url) {
+            if (url["match"](/\.(mp4|webm|ogg)/i) || url["includes"]('supabase.co/storage')) {
+                const thumbnailUrl = url["includes"]('#t=') ? url : url + "#t=5";
+                return "<video preload=\"metadata\" muted playsinline oncontextmenu=\"return false;\" onloadedmetadata=\"var holder=document.getElementById('mini-viewport-" + itemId + "'); if(holder){ if(this.videoWidth > this.videoHeight){ holder.style.setProperty('max-width','100%','important'); } else { holder.style.setProperty('max-width','200px','important'); } }\" class=\"w-full h-auto max-h-[380px] object-contain pointer-events-none select-none\"><source src=\"" + thumbnailUrl + "\" type=\"video/mp4\"></video>";
+            } else if (url["includes"]('youtube.com') || url["includes"]('youtu.be')) {
+                const ytId = dapatkanIdYouTube(url);
+                if (ytId) {
+                    setTimeout(function() {
+                        var holder = document["getElementById"]('mini-viewport-' + itemId);
+                        if(holder) holder["style"]["setProperty"]('max-width', '100%', 'important');
+                    }, 30);
+                    // Mengambil gambar berkualitas tinggi dari server Google, ditambah ikon play palsu di tengahnya
+                    return "<div class=\"w-full aspect-video relative bg-gray-900\"><img src=\"https://img.youtube.com/vi/" + ytId + "/hqdefault.jpg\" class=\"w-full h-full object-cover opacity-80 pointer-events-none select-none\"><div class=\"absolute inset-0 flex items-center justify-center\"><div class=\"w-10 h-10 rounded-full bg-black/60 border border-white/20 flex items-center justify-center\"><i class=\"fa-solid fa-play text-white text-xs pl-0.5\"></i></div></div></div>";
+                }
+            }
+            return "<div class=\"p-8 flex items-center justify-center aspect-video\"><i class=\"fa-solid fa-video text-gray-700 text-2xl\"></i></div>"; 
+        }
+
+        function handleThumbnailClick(e, id, title) { e["preventDefault"](); e["stopPropagation"](); const btn = document["getElementById"]('play-btn-' + id); if (btn && btn["getAttribute"]('data-status') !== 'playing') playVideo(id, title); }
+        function handleButtonClick(e, id, title) { e["preventDefault"](); e["stopPropagation"](); const btn = document["getElementById"]('play-btn-' + id); if (!btn) return; if (btn["getAttribute"]('data-status') === 'playing') closeVideo(id); else playVideo(id, title); }
+
+        // DI-UPDATE: MEMAKSA PARAMETER AUTOPLAY BERJALAN SEMPURNA PADA YOUTUBE
+        function playVideo(id, title) {
+            const btn = document["getElementById"]('play-btn-' + id); const miniBox = document["getElementById"]('mini-viewport-' + id); const bigPlayerZone = document["getElementById"]('expanded-zone-' + id); const fileUrl = videoUrlsCache[id];
+            if (!btn || !miniBox || !bigPlayerZone || !fileUrl) return;
+            btn["setAttribute"]('data-status', 'playing'); btn["innerHTML"] = "<i class=\"fa-solid fa-xmark text-sm\"></i>"; btn["className"] = "w-8 h-8 rounded bg-red-600 hover:bg-red-700 text-white border border-red-500 flex items-center justify-center text-xs shadow-md";
+            miniBox["style"]["setProperty"]('display', 'none', 'important'); bigPlayerZone["className"] = "w-full hidden mt-3 bg-black border border-gray-800 shadow-2xl rounded-lg overflow-hidden flex justify-center items-center h-auto"; bigPlayerZone["classList"]["remove"]('hidden');
+            
+            if (fileUrl["match"](/\.(mp4|webm|ogg)/i) || fileUrl["includes"]('supabase.co/storage')) {
+                const playUrl = fileUrl["split"]('#')[0]; 
+                bigPlayerZone["innerHTML"] = "<video controls autoplay playsinline controlsList=\"nodownload\" oncontextmenu=\"return false;\" class=\"w-full h-auto max-h-[85vh] bg-black select-none object-contain\"><source src=\"" + playUrl + "\" type=\"video/mp4\"></video>";
+            } else if (fileUrl["includes"]('youtube.com') || fileUrl["includes"]('youtu.be')) {
+                bigPlayerZone["classList"]["add"]('aspect-video');
+                const ytId = dapatkanIdYouTube(fileUrl);
+                // Ditambahkan allow="autoplay" dan autoplay=1 & mute=1 (kebijakan browser seluler agar video langsung berputar wajib dibisukan awal/unmute manual)
+                let embed = "https://www.youtube.com/embed/" + ytId + "?autoplay=1&mute=1&rel=0&showinfo=0&controls=1";
+                bigPlayerZone["innerHTML"] = "<iframe src=\"" + embed + "\" class=\"w-full h-full\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>";
+            } else { bigPlayerZone["innerHTML"] = "<div class=\"w-full h-full min-h-[200px] flex flex-col items-center justify-center bg-gray-900 p-4\"><p class=\"text-[11px] text-gray-400 mb-2\">" + title + "</p><a href=\"" + fileUrl + "\" target=\"_blank\" class=\"bg-blue-600 text-white text-[10px] py-1.5 px-3 rounded font-bold\">Buka Sumber</a></div>"; }
+            setTimeout(function() { bigPlayerZone["scrollIntoView"]({ behavior: 'smooth', block: 'center' }); }, 150);
+        }
+
+        function closeVideo(id) {
+            const btn = document["getElementById"]('play-btn-' + id); const miniBox = document["getElementById"]('mini-viewport-' + id); const bigPlayerZone = document["getElementById"]('expanded-zone-' + id); if (!btn || !miniBox || !bigPlayerZone) return;
+            bigPlayerZone["innerHTML"] = ""; bigPlayerZone["classList"]["add"]('hidden'); bigPlayerZone["classList"]["remove"]('aspect-video'); btn["setAttribute"]('data-status', 'paused'); btn["innerHTML"] = "<i class=\"fa-solid fa-play\"></i>"; btn["className"] = "w-8 h-8 rounded bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-700/80 flex items-center justify-center text-xs"; miniBox["style"]["setProperty"]('display', 'block', 'important'); 
+        }
+
+        pasangIklanStickyAtas();
+        loadGofileFeed();
     </script>
 </body>
-</html>
+    </html>
