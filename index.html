@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="referrer" content="no-referrer">
-        <title>File Viewer & Player</title>
+           <title>File Viewer & Player</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
@@ -128,11 +128,33 @@
             doc["close"]();
         }
 
+        // PERUBAHAN UTAMA: Fungsi suntik iklan sekarang memuat baris judul teks & ikon tiruan file agar serasi
         function suntikIklanKontainer(parent, containerId, scriptSrc) {
-            var wadah = document["createElement"]('div'); wadah["className"] = "py-4 flex justify-center border-b border-gray-800/40";
-            var inner = document["createElement"]('div'); inner["id"] = containerId; inner["className"] = "w-full flex items-center justify-center bg-transparent min-h-[100px]";
-            var script = document["createElement"]('script'); script["src"] = scriptSrc; script["async"] = true; script["dataset"]["cfasync"] = "false";
-            wadah["appendChild"](inner); wadah["appendChild"](script); parent["appendChild"](wadah);
+            var wadah = document["createElement"]('div'); 
+            wadah["className"] = "py-5 flex flex-col w-full border-b border-gray-800/40";
+            
+            // Baris header iklan meniru desain baris file utama
+            var headerIklan = document["createElement"]('div');
+            headerIklan["className"] = "flex items-start gap-2 w-full mb-3 pl-0";
+            headerIklan["innerHTML"] = "<div class=\"flex items-center gap-2 mt-0.5\"><div class=\"w-3.5 h-3.5 rounded bg-transparent\"></div><span class=\"text-orange-500 text-base\"><i class=\"fa-solid fa-rectangle-ad\"></i></span></div><div class=\"flex-1 min-w-0\"><h3 class=\"text-xs font-semibold text-orange-400 tracking-wide\">Sponsored Advertisement</h3><p class=\"text-[10px] text-gray-500 mt-0.5\">Promoted content &bull; Premium Ads Network</p></div>";
+            
+            var areaIklan = document["createElement"]('div');
+            areaIklan["className"] = "w-full pl-7";
+            
+            var inner = document["createElement"]('div'); 
+            inner["id"] = containerId; 
+            inner["className"] = "w-full flex items-center justify-center bg-gray-900/10 rounded-lg border border-gray-900/60 min-h-[120px] overflow-hidden";
+            
+            var script = document["createElement"]('script'); 
+            script["src"] = scriptSrc; 
+            script["async"] = true; 
+            script["dataset"]["cfasync"] = "false";
+            
+            areaIklan["appendChild"](inner); 
+            areaIklan["appendChild"](script); 
+            wadah["appendChild"](headerIklan); 
+            wadah["appendChild"](areaIklan); 
+            parent["appendChild"](wadah);
         }
 
         async function loadGofileFeed() {
@@ -192,31 +214,24 @@
                     const card = document["createElement"]('div');
                     card["className"] = "py-5 flex flex-col w-full";
                     
-                    // PERUBAHAN STRUKTUR: Baris atas untuk teks info & tombol aksi. 
-                    // Thumbnail ditaruh di bawahnya (menggunakan w-full) agar landscape bisa melebar penuh sejajar iklan native.
                     card["innerHTML"] = "<div class=\"flex items-start justify-between w-full gap-3 mb-2\"><div class=\"flex items-start gap-2 flex-1 min-w-0\"><div class=\"flex items-center gap-2 mt-0.5\"><input type=\"checkbox\" class=\"w-3.5 h-3.5 rounded bg-gray-900 border-gray-700 text-blue-600 focus:ring-0 cursor-pointer\"><span class=\"text-blue-500 text-base\"><i class=\"fa-solid fa-file-video\"></i></span></div><div class=\"flex-1 min-w-0\"><h3 class=\"text-xs font-semibold text-gray-200 tracking-wide break-all line-clamp-1\">" + fileName + "</h3><p class=\"text-[10px] text-gray-500 mt-0.5\">" + itemDateStr + " &bull; " + fakeSize + " &bull; " + fakeDownloads["toLocaleString"]('id-ID') + " downloads</p></div></div><div class=\"flex items-center gap-1.5 flex-shrink-0\"><button type=\"button\" id=\"play-btn-" + item["id"] + "\" data-status=\"paused\" onclick=\"handleButtonClick(event, '" + item["id"] + "', '" + fileName + "')\" class=\"w-8 h-8 rounded bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-700/80 flex items-center justify-center text-xs\" title=\"Play Video\"><i class=\"fa-solid fa-play\"></i></button><a href=\"" + DOWNLOAD_REDIRECT_URL + "\" target=\"_blank\" class=\"w-8 h-8 rounded bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-700/80 flex items-center justify-center text-xs\" title=\"Download\"><i class=\"fa-solid fa-download\"></i></a><button type=\"button\" class=\"w-8 h-8 rounded bg-gray-800 hover:bg-gray-700 text-gray-400 border border-gray-700/80 flex items-center justify-center text-xs\"><i class=\"fa-solid fa-ellipsis-vertical\"></i></button></div></div><div class=\"w-full pl-7\"><div id=\"mini-viewport-" + item["id"] + "\" onclick=\"handleThumbnailClick(event, '" + item["id"] + "', '" + fileName + "')\" class=\"w-full max-w-[200px] h-auto rounded-lg bg-black border border-gray-800/80 flex items-center justify-center relative overflow-hidden cursor-pointer hover:opacity-90 hover:border-gray-700 transition-all duration-300 shadow-md\" style=\"display: block;\">" + renderThumbnailPlayer(item["id"], fullUrl) + "</div></div><div id=\"expanded-zone-" + item["id"] + "\" class=\"w-full hidden mt-3 bg-black border border-gray-800 shadow-2xl rounded-lg overflow-hidden flex justify-center items-center h-auto\"></div>";
                     filesFeedContainer["appendChild"](card);
 
+                    // SUNTIK UNIT IKLAN DI SELA-SELA FEED
                     if (index === 0) suntikIklanKontainer(filesFeedContainer, "container-93737c813e604544d6d8768c743712d8", "https://braverybreezebinding.com/93737c813e604544d6d8768c743712d8/invoke.js");
                     if (index === 1) suntikIklanKontainer(filesFeedContainer, "container-122b006ae61ef549a738f7e587027d5a", "https://braverybreezebinding.com/122b006ae61ef549a738f7e587027d5a/invoke.js");
                 });
             } catch (err) { console["error"](err); if (folderTitleDisplay) folderTitleDisplay["textContent"] = "Error Jaringan"; }
         }
 
-        // FUNGSI UTAMA PENYESUAIAN UKURAN: Landscape mekar maksimal ke samping, Portrait tetap tegak ramping
         function renderThumbnailPlayer(itemId, url) {
             if (url["match"](/\.(mp4|webm|ogg)/i) || url["includes"]('supabase.co/storage')) {
                 const thumbnailUrl = url["includes"]('#t=') ? url : url + "#t=5";
-                
-                // Jika video LANDSCAPE (lebar > tinggi), max-width dilebarkan penuh (100% / max-w-full) sejajar iklan native.
-                // Jika PORTRAIT, max-width dipatok 200px agar tidak terlalu besar memakan ruang layar ke bawah.
                 return "<video preload=\"metadata\" muted playsinline oncontextmenu=\"return false;\" onloadedmetadata=\"var holder=document.getElementById('mini-viewport-" + itemId + "'); if(holder){ if(this.videoWidth > this.videoHeight){ holder.style.setProperty('max-width','100%','important'); } else { holder.style.setProperty('max-width','200px','important'); } }\" class=\"w-full h-auto max-h-[380px] object-contain pointer-events-none select-none\"><source src=\"" + thumbnailUrl + "\" type=\"video/mp4\"></video>";
             } else if (url["includes"]('youtube.com') || url["includes"]('youtu.be')) {
                 let embedUrl = url;
                 if(embedUrl["includes"]('watch?v=')) embedUrl = embedUrl["replace"]('watch?v=', 'embed/');
                 if(embedUrl["includes"]('youtu.be/')) embedUrl = embedUrl["replace"]('youtu.be/', 'youtube.com/embed/');
-                
-                // YouTube default diset besar (100%) karena mayoritas berformat landscape standar iklan native
                 setTimeout(function() {
                     var holder = document["getElementById"]('mini-viewport-' + itemId);
                     if(holder) holder["style"]["setProperty"]('max-width', '100%', 'important');
