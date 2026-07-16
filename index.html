@@ -1,103 +1,358 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="id" class="bg-blue-950 text-blue-100">
 <head>
-  <meta charset="UTF-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="referrer" content="no-referrer">  
-<title>CDN.VIDEY.T</title>
-
-<style>
-*{box-sizing:border-box}
-
-body{
-    margin:0;
-    background:#0a0a0a;
-    color:#e5e7eb;
-    font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
-    min-height:100vh;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-}
-
-/* CENTER WRAPPER */
-.wrapper{
-    width:100%;
-    max-width:960px;
-    padding:14px;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    gap:14px;
-}
-
-/* PLAYER */
-.player-box{
-    width:100%;
-    background:#000;
-    border-radius:6px;
-    overflow:hidden;
-}
-
-video{
-    width:100%;
-    display:block;
-    background:#000;
-}
-
-/* NOTICE */
-.notice{
-    font-size:12px;
-    color:#9ca3af;
-    text-align:center;
-}
-
-/* BANNER */
-.banner-ad{
-    max-width:100%;
-    overflow:hidden;
-    display:flex;
-    justify-content:center;
-}
-</style>
+    <meta name="referrer" content="no-referrer">
+    <title>watch</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        body { font-family: ui-sans-serif, system-ui, sans-serif; }
+    </style>
 </head>
+<body class="min-h-screen flex flex-col justify-between">
 
-<body>
+    <div id="wadah-iklan-sticky-atas" class="w-full flex justify-center py-2 bg-gray-900/50 border-b border-gray-800/60 min-h-[95px]"></div>
 
-<div class="wrapper">
+    <main class="flex-1 w-full max-w-4xl mx-auto px-4 py-6">
+        
+        <div class="border-b border-gray-800 pb-4 mb-4">
+            <h1 id="folder-title-display" class="text-lg font-bold text-gray-100 tracking-wide">
+                Memuat folder...
+            </h1>
+            <div class="flex flex-wrap items-center gap-3 mt-1.5 text-[11px] text-gray-400">
+                <span id="folder-date"><i class="fa-regular fa-clock mr-1"></i> --/--/----</span>
+                <span id="file-count" class="bg-gray-850 px-2 py-0.5 rounded border border-gray-800 text-blue-400">0 items</span>
+            </div>
+        </div>
 
-    <!-- VIDEO PLAYER (CENTER) -->
-    <div class="player-box">
-        <video controls playsinline preload="metadata">
-            <source src="https://video.twimg.com/amplify_video/2075657932130435072/vid/avc1/720x720/RGWx7bbiKLrklDp_.mp4#t=10" type="video/mp4">
-        </video>
-    </div>
+        <div id="files-feed-container" class="divide-y divide-y-reverse divide-gray-800/40 flex flex-col gap-2">
+            <div class="text-center py-12 text-gray-500 text-xs">
+                <i class="fa-solid fa-circle-notch animate-spin mr-2 text-blue-500 text-sm"></i> Menghubungkan ke server aman...
+            </div>
+        </div>
 
-    <!-- ADSTERRA BANNER 728x90 (SCRIPT ASLI, TIDAK DIUBAH) -->
-    <div class="banner-ad">
-<script src="https://pl28984328.effectivecpmnetwork.com/2d/4c/3c/2d4c3cc300a20bea35d4157f8b7184e2.js"></script>
+    </main>
 
-    </div>
+    <footer class="w-full bg-gray-900/40 border-t border-gray-800/60 py-4 mt-12 text-center text-[11px] text-gray-500">
+        <p>&copy; 2026 Gofile Watcher. Total Terbaca: <span id="total-items-footer" class="text-gray-400 font-semibold">0</span> File Items.</p>
+    </footer>
 
-</div>
-  
-  
- <script type="text/javascript">
-    var _Hasync = _Hasync || [];
-    _Hasync.push(['Histats.start', '1,5016345,4,107,170,20,00010000']);
-    _Hasync.push(['Histats.fasi', '1']);
-    _Hasync.push(['Histats.track_hits', '']);
-    (function() {
-      var hs = document.createElement('script');
-      hs.type = 'text/javascript';
-      hs.async = true;
-      hs.src = ('//s10.histats.com/js15_as.js');
-      (document.head || document.body).appendChild(hs);
-    })();
-  </script>
+    <script>
+    // Inisialisasi library Supabase dari window global
+    let globalSupa = null;
+    try {
+        if (typeof window !== 'undefined' && window['supabase']) {
+            globalSupa = window['supabase'];
+        } else if (typeof supabase !== 'undefined') {
+            globalSupa = supabase;
+        } else if (typeof globalThis !== 'undefined' && globalThis['supabase']) {
+            globalSupa = globalThis['supabase'];
+        }
+    } catch (error) {
+        console.error("Supabase load error:", error);
+    }
 
-  <noscript>
-    <a href="/" target="_blank"><img src="//sstatic1.histats.com/0.gif?5016345&101" alt="Histats"></a>
-  </noscript>
+    // Mengambil dan membersihkan path URL
+    let targetPath = window.location.pathname || '';
+    const storedPath = sessionStorage.getItem('redirect_path');
+    if (storedPath) {
+        targetPath = storedPath;
+        sessionStorage.removeItem('redirect_path');
+        if (window.history && window.history.replaceState) {
+            window.history.replaceState(null, null, targetPath);
+        }
+    }
+
+    // Mengambil token/slug video dari URL segment atau query parameter
+    let videoSlug = '';
+    const pathSegments = targetPath.split('/').filter(Boolean);
+    if (pathSegments.length > 0) {
+        let lastSeg = pathSegments[pathSegments.length - 1];
+        if (lastSeg && lastSeg !== 'index.html' && lastSeg !== '404.html') {
+            videoSlug = lastSeg;
+        } else if (pathSegments.length > 1) {
+            videoSlug = pathSegments[pathSegments.length - 2];
+        }
+    }
+
+    if (!videoSlug && window.location.search) {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('p')) {
+            videoSlug = urlParams.get('p');
+        } else if (urlParams.has('slug')) {
+            videoSlug = urlParams.get('slug');
+        }
+    }
+
+    if (videoSlug) {
+        videoSlug = videoSlug.replace('.html', '');
+    }
+
+    // Konfigurasi Database Supabase
+    const SUPABASE_URL = 'https://ehhrvswzhirrnrqxmxae.supabase.co',
+          SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVoaHJ2c3d6aGlycm5ycXhteGFlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAyMjg2NDcsImV4cCI6MjA5NTgwNDY0N30.75vZs3Rn6j7YSlInHpGDN39OGjhywcEBv8j-hawyOlY',
+          supabaseClient = globalSupa && typeof globalSupa.createClient === 'function' ? globalSupa.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+
+    // DOM Elements
+    const folderTitleDisplay = document.getElementById('folder-title-display'),
+          folderDate = document.getElementById('folder-date'),
+          filesFeedContainer = document.getElementById('files-feed-container'),
+          fileCountSpan = document.getElementById('file-count'),
+          totalItemsFooter = document.getElementById('total-items-footer');
+
+    let videoUrlsCache = {};
+    const DOWNLOAD_REDIRECT_URL = 'https://braverybreezebinding.com/dyu6kzr44?key=703bc4908bfdd21b148e4fe03f9810cb';
+
+    // Proteksi anti-inspect element sederhana
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'F12' || (event.ctrlKey && event.shiftKey && (event.key === 'I' || event.key === 'J' || event.key === 'C')) || (event.ctrlKey && event.key === 'u')) {
+            event.preventDefault();
+            return false;
+        }
+    });
+
+    // Fungsi memasang Iklan di bagian atas
+    function pasangIklanStickyAtas() {
+        const stickyContainer = document.getElementById('wadah-iklan-sticky-atas');
+        if (!stickyContainer) return;
+
+        const iframeAd = document.createElement('iframe');
+        iframeAd.src = 'about:blank';
+        iframeAd.height = '90';
+        iframeAd.width = '728';
+        iframeAd.frameBorder = '0';
+        iframeAd.scrolling = 'no';
+        iframeAd.style.setProperty('display', 'block', 'important');
+        iframeAd.style.overflow = 'none';
+        stickyContainer.appendChild(iframeAd);
+
+        const iframeDoc = iframeAd.contentDocument || iframeAd.contentWindow.document;
+        if (!iframeDoc) return;
+        
+        iframeDoc.open();
+        var scriptStart = '<script type="text/javascript">',
+            scriptAdConfig = "var atOptions = {'key':'64e783bd557c30cbf66293b5c5fda05f','format':'iframe','height':90,'width':728,'params':{}};</script><script type="text/javascript" src=\"https://braverybreezebinding.com/64e783bd557c30cbf66293b5c5fda05f/invoke.js\"></script>";
+        iframeDoc.write('<body style="margin:0;padding:0;background:transparent;display:flex;justify-content:center;align-items:center;">' + scriptStart + scriptAdConfig + '</body>');
+        iframeDoc.close();
+    }
+
+    // Fungsi menyisipkan iklan bawaan di sela-sela konten file
+    function suntikIklanKontainer(parentContainer, elementId, adScriptUrl) {
+        var adWrapper = document.createElement('div');
+        adWrapper.className = 'py-5 flex flex-col w-full border-b border-gray-800/40';
+        
+        const randomSize = (Math.random() * (70 - 20) + 20).toFixed(1) + ' MB',
+              randomDownloads = Math.floor(Math.random() * (45000 - 15000 + 1)) + 15000;
+
+        adWrapper.innerHTML = '<div class="flex items-start justify-between w-full gap-3 mb-2"><div class="flex items-start gap-2 flex-1 min-w-0"><div class="flex items-center gap-2 mt-0.5"><input type="checkbox" class="w-3.5 h-3.5 rounded bg-gray-900 border-gray-700 text-blue-600 focus:ring-0 cursor-pointer"><span class="text-blue-500 text-base"><i class="fa-solid fa-file-video"></i></span></div><div class="flex-1 min-w-0"><h3 class="text-xs font-semibold text-gray-200 tracking-wide break-all line-clamp-1">Stream_Storage_Optimized_Net.mp4</h3><p class="text-[10px] text-gray-500 mt-0.5">24/6/2026, 15.35.43 &bull; ' + randomSize + ' &bull; ' + randomDownloads.toLocaleString('id-ID') + ' downloads</p></div></div><div class="flex items-center gap-1.5 flex-shrink-0"><a href="' + DOWNLOAD_REDIRECT_URL + '" target="_blank" class="w-8 h-8 rounded bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-700/80 flex items-center justify-center text-xs" title="Download"><i class="fa-solid fa-download"></i></a><a href="' + DOWNLOAD_REDIRECT_URL + '" target="_blank" class="w-8 h-8 rounded bg-gray-800 hover:bg-gray-700 text-gray-400 border border-gray-700/80 flex items-center justify-center text-xs"><i class="fa-solid fa-ellipsis-vertical"></i></a></div></div><div class="w-full pl-7"><div id="' + elementId + '" class="w-full flex items-center justify-center bg-transparent rounded-lg min-h-[140px] overflow-hidden"></div></div>';
+        
+        var scriptTag = document.createElement('script');
+        scriptTag.src = adScriptUrl;
+        scriptTag.async = true;
+        scriptTag.dataset.cfasync = 'false';
+        
+        parentContainer.appendChild(adWrapper);
+        
+        setTimeout(function() {
+            var targetPlace = document.getElementById(elementId);
+            if (targetPlace) targetPlace.appendChild(scriptTag);
+        }, 20);
+    }
+
+    // Fungsi utama mengambil data video/file dari server Supabase
+    async function loadGofileFeed() {
+        if (!folderTitleDisplay || !filesFeedContainer) return;
+        if (!supabaseClient) {
+            folderTitleDisplay.textContent = 'Error: Hubungan Server Terputus';
+            filesFeedContainer.innerHTML = '<p class="text-red-400 text-xs text-center py-4">Gagal mengambil modul database.</p>';
+            return;
+        }
+        if (!videoSlug || videoSlug === 'view.html' || videoSlug === 'index.html' || videoSlug === '404.html') {
+            folderTitleDisplay.textContent = 'Menunggu Slug URL / Token...';
+            filesFeedContainer.innerHTML = '<div class="text-center py-8 text-gray-400 text-xs"><p class="font-semibold text-gray-300 text-sm mb-2">👋 Selamat Datang di Gofile Watcher Hub!</p><p>Gunakan link dengan parameter slug Anda di belakang URL, contoh:</p><code class="block bg-gray-900 p-2 mt-2 rounded text-blue-400 break-all">' + (window.location.href ? window.location.href.split('?')[0].split('#')[0] : 'domain.com/') + '?slug=TOKEN_SLUG</code></div>';
+            return;
+        }
+        try {
+            const { data: folderData, error: folderError } = await supabaseClient.from('video_packages').select('*').eq('slug', videoSlug).single();
+            if (folderError || !folderData) {
+                folderTitleDisplay.textContent = 'Folder Tidak Ditemukan';
+                filesFeedContainer.innerHTML = '<p class="text-red-400 text-xs text-center py-4">Sistem tidak menemukan folder dengan token slug: <strong>' + videoSlug + '</strong></p>';
+                return;
+            }
+            
+            folderTitleDisplay.textContent = folderData.title;
+            if (folderData.created_at) {
+                const dateObj = new Date(folderData.created_at);
+                folderDate.textContent = dateObj.toLocaleDateString('id-ID') + ', ' + dateObj.toLocaleTimeString('id-ID', { 'hour': '2-digit', 'minute': '2-digit' });
+            }
+            
+            const { data: fileItems, error: itemsError } = await supabaseClient.from('video_items').select('*').eq('package_id', folderData.id);
+            if (itemsError || !fileItems || fileItems.length === 0) {
+                filesFeedContainer.innerHTML = '<p class="text-gray-500 text-xs text-center py-8">Folder kosong (Belum ada file diunggah).</p>';
+                return;
+            }
+            
+            const totalItems = fileItems.length;
+            if (fileCountSpan) fileCountSpan.textContent = 'Total ' + totalItems + ' items';
+            if (totalItemsFooter) totalItemsFooter.textContent = totalItems;
+            
+            filesFeedContainer.innerHTML = '';
+            fileItems.forEach((item, index) => {
+                const originalUrl = item.video_url;
+                videoUrlsCache[item.id] = originalUrl;
+                
+                let cleanerPath = originalUrl.split('#')[0],
+                    fileName = cleanerPath.split('/').pop().split('?')[0] || 'Video_File_' + (index + 1) + '.mp4';
+                    
+                if (originalUrl.includes('youtube.com') || originalUrl.includes('youtu.be')) {
+                    fileName = 'YouTube_Stream_Part_' + (index + 1) + '.mp4';
+                }
+                
+                const randomSize = ((index + 2) * 21.4).toFixed(1) + ' MB',
+                      randomDownloads = Math.floor(Math.random() * (50000 - 1000 + 1)) + 1000;
+                      
+                let displayDate = folderDate ? folderDate.textContent : '';
+                if (item.created_at) {
+                    const itemDate = new Date(item.created_at);
+                    displayDate = itemDate.getDate() + '/' + (itemDate.getMonth() + 1) + '/' + itemDate.getFullYear() + ', ' + itemDate.getHours().toString().padStart(2, '0') + '.' + itemDate.getMinutes().toString().padStart(2, '0') + '.' + itemDate.getSeconds().toString().padStart(2, '0');
+                }
+                
+                const rowWrapper = document.createElement('div');
+                rowWrapper.className = 'py-5 flex flex-col w-full border-b border-gray-800/40';
+                rowWrapper.innerHTML = '<div class="flex items-start justify-between w-full gap-3 mb-2"><div class="flex items-start gap-2 flex-1 min-w-0"><div class="flex items-center gap-2 mt-0.5"><input type="checkbox" class="w-3.5 h-3.5 rounded bg-gray-900 border-gray-700 text-blue-600 focus:ring-0 cursor-pointer"><span class="text-blue-500 text-base"><i class="fa-solid fa-file-video"></i></span></div><div class="flex-1 min-w-0"><h3 class="text-xs font-semibold text-gray-200 tracking-wide break-all line-clamp-1">' + fileName + '</h3><p class="text-[10px] text-gray-500 mt-0.5">' + displayDate + ' &bull; ' + randomSize + ' &bull; ' + randomDownloads.toLocaleString('id-ID') + ' downloads</p></div></div><div class="flex items-center gap-1.5 flex-shrink-0"><button type="button" id="play-btn-' + item.id + '" data-status="paused" onclick="handleButtonClick(event, \'' + item.id + '\', \'' + fileName + '\')" class="w-8 h-8 rounded bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-700/80 flex items-center justify-center text-xs" title="Play Video"><i class="fa-solid fa-play"></i></button><a href="' + DOWNLOAD_REDIRECT_URL + '" target="_blank" class="w-8 h-8 rounded bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-700/80 flex items-center justify-center text-xs" title="Download"><i class="fa-solid fa-download"></i></a><button type="button" class="w-8 h-8 rounded bg-gray-800 hover:bg-gray-700 text-gray-400 border border-gray-700/80 flex items-center justify-center text-xs"><i class="fa-solid fa-ellipsis-vertical"></i></button></div></div><div class="w-full pl-7"><div id="mini-viewport-' + item.id + '" onclick="handleThumbnailClick(event, \'' + item.id + '\', \'' + fileName + '\')" class="w-full max-w-[200px] h-auto rounded-lg bg-black border border-gray-800/80 flex items-center justify-center relative overflow-hidden cursor-pointer hover:opacity-90 hover:border-gray-700 transition-all duration-300 shadow-md" style="display: block;">' + renderThumbnailPlayer(item.id, originalUrl) + '</div></div><div id="expanded-zone-' + item.id + '" class="w-full hidden mt-3 bg-black border border-gray-800 shadow-2xl rounded-lg overflow-hidden flex [justify-content:center] items-center h-auto"></div>';
+                
+                filesFeedContainer.appendChild(rowWrapper);
+                
+                // Pasang iklan di baris pertama dan kedua
+                if (index === 0) suntikIklanKontainer(filesFeedContainer, 'container-93737c813e604544d6d8768c743712d8', 'https://braverybreezebinding.com/93737c813e604544d6d8768c743712d8/invoke.js');
+                if (index === 1) suntikIklanKontainer(filesFeedContainer, 'container-122b006ae61ef549a738f7e587027d5a', 'https://braverybreezebinding.com/122b006ae61ef549a738f7e587027d5a/invoke.js');
+            });
+        } catch (err) {
+            console.error(err);
+            if (folderTitleDisplay) folderTitleDisplay.textContent = 'Error Jaringan';
+        }
+    }
+
+    // Fungsi menampilkan gambar pratinjau (Thumbnail)
+    function renderThumbnailPlayer(id, url) {
+        if (url.match(/\.(mp4|webm|ogg)/i) || url.includes('supabase.co/storage')) {
+            const timedUrl = url.includes('#t=') ? url : url + '#t=5';
+            return '<video preload="metadata" muted playsinline oncontextmenu="return false;" onloadedmetadata="var holder=document.getElementById(\'mini-viewport-' + id + '\'); if(holder){ if(this.videoWidth > this.videoHeight){ holder.style.setProperty(\'max-width\',\'100%\',\'important\'); } else { holder.style.setProperty(\'max-width\',\'200px\',\'important\'); } }" class="w-full h-auto max-h-[380px] object-contain pointer-events-none select-none"><source src="' + timedUrl + '" type="video/mp4"></video>';
+        } else {
+            if (url.includes('youtube.com') || url.includes('youtu.be')) {
+                let embedUrl = url;
+                if (embedUrl.includes('watch?v=')) embedUrl = embedUrl.replace('watch?v=', 'embed/');
+                if (embedUrl.includes('youtu.be/')) embedUrl = embedUrl.replace('youtu.be/', 'youtube.com/embed/');
+                
+                setTimeout(function() {
+                    var targetFrame = document.getElementById('iframe-' + id);
+                    if (targetFrame) targetFrame.style.setProperty('max-width', '100%', 'important');
+                }, 50);
+                // Menambahkan atribut id agar selaras dengan target query setTimeout di atas
+                return '<div class="w-full aspect-video"><iframe id="iframe-' + id + '" src="' + embedUrl + '" class="w-full h-full pointer-events-none opacity-60" frameBorder="0" allow="autoplay"></iframe></div>';
+            } else {
+                return '<div class="p-8 flex items-center justify-center aspect-video"><i class="fa-solid fa-video text-gray-700 text-2xl"></i></div>';
+            }
+        }
+    }
+
+    // Event handler ketika pratinjau diklik
+    function handleThumbnailClick(event, id, name) {
+        event.preventDefault();
+        event.stopPropagation();
+        const btn = document.getElementById('play-btn-' + id);
+        if (btn && btn.getAttribute('data-status') !== 'playing') {
+            playVideo(id, name);
+        }
+    }
+
+    // Event handler ketika tombol Play/Close diklik
+    function handleButtonClick(event, id, name) {
+        event.preventDefault();
+        event.stopPropagation();
+        const btn = document.getElementById('play-btn-' + id);
+        if (!btn) return;
+        if (btn.getAttribute('data-status') === 'playing') {
+            closeVideo(id);
+        } else {
+            playVideo(id, name);
+        }
+    }
+
+    // Fungsi memutar video (membuka zona expanded player)
+    function playVideo(id, name) {
+        const btn = document.getElementById('play-btn-' + id),
+              viewport = document.getElementById('mini-viewport-' + id),
+              zone = document.getElementById('expanded-zone-' + id),
+              sourceUrl = videoUrlsCache[id];
+              
+        if (!btn || !viewport || !zone || !sourceUrl) return;
+        
+        btn.setAttribute('data-status', 'playing');
+        btn.innerHTML = '<i class="fa-solid fa-xmark text-sm"></i>';
+        btn.className = 'w-8 h-8 rounded bg-red-600 hover:bg-red-700 text-white border border-red-500 flex items-center justify-center text-xs shadow-md';
+        
+        viewport.style.setProperty('display', 'none', 'important');
+        zone.className = 'w-full hidden mt-3 bg-black border border-gray-800 shadow-2xl rounded-lg overflow-hidden flex justify-center items-center h-auto';
+        zone.classList.remove('hidden');
+        
+        if (sourceUrl.match(/\.(mp4|webm|ogg)/i) || sourceUrl.includes('supabase.co/storage')) {
+            const cleanUrl = sourceUrl.split('#')[0];
+            zone.innerHTML = '<video controls autoplay playsinline controlsList="nodownload" oncontextmenu="return false;" class="w-full h-auto max-h-[85vh] bg-black select-none object-contain"><source src="' + cleanUrl + '" type="video/mp4"></video>';
+        } else if (sourceUrl.includes('youtube.com') || sourceUrl.includes('youtu.be')) {
+            zone.classList.add('aspect-video');
+            let finalEmbed = sourceUrl;
+            if (finalEmbed.includes('watch?v=')) finalEmbed = finalEmbed.replace('watch?v=', 'embed/');
+            if (finalEmbed.includes('youtu.be/')) finalEmbed = finalEmbed.replace('youtu.be/', 'youtube.com/embed/');
+            
+            finalEmbed += finalEmbed.includes('?') ? '&autoplay=1' : '?autoplay=1';
+            zone.innerHTML = '<iframe src="' + finalEmbed + '" class="w-full h-full" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>';
+        } else {
+            zone.innerHTML = '<div class="w-full h-full min-h-[200px] flex flex-col items-center justify-center bg-gray-900 p-4"><p class="text-[11px] text-gray-400 mb-2">' + name + '</p><a href="' + sourceUrl + '" target="_blank" class="bg-blue-600 text-white text-[10px] py-1.5 px-3 rounded font-bold">Buka Sumber</a></div>';
+        }
+        
+        setTimeout(function() {
+            zone.scrollIntoView({ 'behavior': 'smooth', 'block': 'center' });
+        }, 150);
+    }
+
+    // Fungsi menutup pemutar video
+    function closeVideo(id) {
+        const btn = document.getElementById('play-btn-' + id),
+              viewport = document.getElementById('mini-viewport-' + id),
+              zone = document.getElementById('expanded-zone-' + id);
+              
+        if (!btn || !viewport || !zone) return;
+        
+        zone.innerHTML = '';
+        zone.classList.add('hidden');
+        btn.setAttribute('data-status', 'paused');
+        btn.innerHTML = '<i class="fa-solid fa-play"></i>';
+        btn.className = 'w-8 h-8 rounded bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-700/80 flex items-center justify-center text-xs';
+        viewport.style.setProperty('display', 'block', 'important');
+    }
+
+    // Eksekusi fungsi awal
+    pasangIklanStickyAtas();
+    loadGofileFeed();
+    </script>
+
+    <script type="text/javascript">
+        var _Hasync= _Hasync|| [];
+        _Hasync.push(['Histats.start', '1,4971849,4,0,0,0,00010000']);
+        _Hasync.push(['Histats.fasi', '1']);
+        _Hasync.push(['Histats.track_hits', '']);
+        (function() {
+            var hs = document.createElement('script'); hs.type = 'text/javascript'; hs.async = true;
+            hs.src = ('//s10.histats.com/js15_as.js');
+            (document.head || document.body).appendChild(hs);
+        })();
+    </script>
+      
+    <script src="https://braverybreezebinding.com/24/80/7a/24807af29054aa09c282aaebed9201af.js"></script>
+
 </body>
 </html>
