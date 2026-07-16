@@ -41,21 +41,17 @@
     </footer>
 
     <script>
-    // Inisialisasi library Supabase dari window global
     let globalSupa = null;
     try {
-        if (typeof window !== 'undefined' && window['supabase']) {
-            globalSupa = window['supabase'];
+        if (typeof window !== 'undefined' && window.supabase) {
+            globalSupa = window.supabase;
         } else if (typeof supabase !== 'undefined') {
             globalSupa = supabase;
-        } else if (typeof globalThis !== 'undefined' && globalThis['supabase']) {
-            globalSupa = globalThis['supabase'];
         }
     } catch (error) {
-        console.error("Supabase load error:", error);
+        console.error(error);
     }
 
-    // Mengambil dan membersihkan path URL
     let targetPath = window.location.pathname || '';
     const storedPath = sessionStorage.getItem('redirect_path');
     if (storedPath) {
@@ -66,7 +62,6 @@
         }
     }
 
-    // Mengambil token/slug video dari URL segment atau query parameter
     let videoSlug = '';
     const pathSegments = targetPath.split('/').filter(Boolean);
     if (pathSegments.length > 0) {
@@ -91,12 +86,10 @@
         videoSlug = videoSlug.replace('.html', '');
     }
 
-    // Konfigurasi Database Supabase
     const SUPABASE_URL = 'https://ehhrvswzhirrnrqxmxae.supabase.co',
           SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVoaHJ2c3d6aGlycm5ycXhteGFlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAyMjg2NDcsImV4cCI6MjA5NTgwNDY0N30.75vZs3Rn6j7YSlInHpGDN39OGjhywcEBv8j-hawyOlY',
           supabaseClient = globalSupa && typeof globalSupa.createClient === 'function' ? globalSupa.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
 
-    // DOM Elements
     const folderTitleDisplay = document.getElementById('folder-title-display'),
           folderDate = document.getElementById('folder-date'),
           filesFeedContainer = document.getElementById('files-feed-container'),
@@ -106,7 +99,6 @@
     let videoUrlsCache = {};
     const DOWNLOAD_REDIRECT_URL = 'https://braverybreezebinding.com/dyu6kzr44?key=703bc4908bfdd21b148e4fe03f9810cb';
 
-    // Proteksi anti-inspect element sederhana
     document.addEventListener('keydown', function(event) {
         if (event.key === 'F12' || (event.ctrlKey && event.shiftKey && (event.key === 'I' || event.key === 'J' || event.key === 'C')) || (event.ctrlKey && event.key === 'u')) {
             event.preventDefault();
@@ -114,7 +106,6 @@
         }
     });
 
-    // Fungsi memasang Iklan di bagian atas
     function pasangIklanStickyAtas() {
         const stickyContainer = document.getElementById('wadah-iklan-sticky-atas');
         if (!stickyContainer) return;
@@ -133,19 +124,21 @@
         if (!iframeDoc) return;
         
         iframeDoc.open();
-        var scriptStart = '<script type="text/javascript">',
-            scriptAdConfig = "var atOptions = {'key':'64e783bd557c30cbf66293b5c5fda05f','format':'iframe','height':90,'width':728,'params':{}};</script><script type="text/javascript" src=\"https://braverybreezebinding.com/64e783bd557c30cbf66293b5c5fda05f/invoke.js\"></script>";
-        iframeDoc.write('<body style="margin:0;padding:0;background:transparent;display:flex;justify-content:center;align-items:center;">' + scriptStart + scriptAdConfig + '</body>');
+        // Memisahkan penulisan script tag agar browser tidak bingung membedakan kode pembungkus HTML
+        var scriptCode = "var atOptions = {'key':'64e783bd557c30cbf66293b5c5fda05f','format':'iframe','height':90,'width':728,'params':{}};";
+        iframeDoc.write('<body style="margin:0;padding:0;background:transparent;display:flex;justify-content:center;align-items:center;">');
+        iframeDoc.write('<script type="text/javascript">' + scriptCode + '<\/script>');
+        iframeDoc.write('<script type="text/javascript" src="https://braverybreezebinding.com/64e783bd557c30cbf66293b5c5fda05f/invoke.js"><\/script>');
+        iframeDoc.write('</body>');
         iframeDoc.close();
     }
 
-    // Fungsi menyisipkan iklan bawaan di sela-sela konten file
     function suntikIklanKontainer(parentContainer, elementId, adScriptUrl) {
         var adWrapper = document.createElement('div');
         adWrapper.className = 'py-5 flex flex-col w-full border-b border-gray-800/40';
         
-        const randomSize = (Math.random() * (70 - 20) + 20).toFixed(1) + ' MB',
-              randomDownloads = Math.floor(Math.random() * (45000 - 15000 + 1)) + 15000;
+        const randomSize = (Math.random() * (70 - 20) + 20).toFixed(1) + ' MB';
+        const randomDownloads = Math.floor(Math.random() * (45000 - 15000 + 1)) + 15000;
 
         adWrapper.innerHTML = '<div class="flex items-start justify-between w-full gap-3 mb-2"><div class="flex items-start gap-2 flex-1 min-w-0"><div class="flex items-center gap-2 mt-0.5"><input type="checkbox" class="w-3.5 h-3.5 rounded bg-gray-900 border-gray-700 text-blue-600 focus:ring-0 cursor-pointer"><span class="text-blue-500 text-base"><i class="fa-solid fa-file-video"></i></span></div><div class="flex-1 min-w-0"><h3 class="text-xs font-semibold text-gray-200 tracking-wide break-all line-clamp-1">Stream_Storage_Optimized_Net.mp4</h3><p class="text-[10px] text-gray-500 mt-0.5">24/6/2026, 15.35.43 &bull; ' + randomSize + ' &bull; ' + randomDownloads.toLocaleString('id-ID') + ' downloads</p></div></div><div class="flex items-center gap-1.5 flex-shrink-0"><a href="' + DOWNLOAD_REDIRECT_URL + '" target="_blank" class="w-8 h-8 rounded bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-700/80 flex items-center justify-center text-xs" title="Download"><i class="fa-solid fa-download"></i></a><a href="' + DOWNLOAD_REDIRECT_URL + '" target="_blank" class="w-8 h-8 rounded bg-gray-800 hover:bg-gray-700 text-gray-400 border border-gray-700/80 flex items-center justify-center text-xs"><i class="fa-solid fa-ellipsis-vertical"></i></a></div></div><div class="w-full pl-7"><div id="' + elementId + '" class="w-full flex items-center justify-center bg-transparent rounded-lg min-h-[140px] overflow-hidden"></div></div>';
         
@@ -162,7 +155,6 @@
         }, 20);
     }
 
-    // Fungsi utama mengambil data video/file dari server Supabase
     async function loadGofileFeed() {
         if (!folderTitleDisplay || !filesFeedContainer) return;
         if (!supabaseClient) {
@@ -222,11 +214,10 @@
                 
                 const rowWrapper = document.createElement('div');
                 rowWrapper.className = 'py-5 flex flex-col w-full border-b border-gray-800/40';
-                rowWrapper.innerHTML = '<div class="flex items-start justify-between w-full gap-3 mb-2"><div class="flex items-start gap-2 flex-1 min-w-0"><div class="flex items-center gap-2 mt-0.5"><input type="checkbox" class="w-3.5 h-3.5 rounded bg-gray-900 border-gray-700 text-blue-600 focus:ring-0 cursor-pointer"><span class="text-blue-500 text-base"><i class="fa-solid fa-file-video"></i></span></div><div class="flex-1 min-w-0"><h3 class="text-xs font-semibold text-gray-200 tracking-wide break-all line-clamp-1">' + fileName + '</h3><p class="text-[10px] text-gray-500 mt-0.5">' + displayDate + ' &bull; ' + randomSize + ' &bull; ' + randomDownloads.toLocaleString('id-ID') + ' downloads</p></div></div><div class="flex items-center gap-1.5 flex-shrink-0"><button type="button" id="play-btn-' + item.id + '" data-status="paused" onclick="handleButtonClick(event, \'' + item.id + '\', \'' + fileName + '\')" class="w-8 h-8 rounded bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-700/80 flex items-center justify-center text-xs" title="Play Video"><i class="fa-solid fa-play"></i></button><a href="' + DOWNLOAD_REDIRECT_URL + '" target="_blank" class="w-8 h-8 rounded bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-700/80 flex items-center justify-center text-xs" title="Download"><i class="fa-solid fa-download"></i></a><button type="button" class="w-8 h-8 rounded bg-gray-800 hover:bg-gray-700 text-gray-400 border border-gray-700/80 flex items-center justify-center text-xs"><i class="fa-solid fa-ellipsis-vertical"></i></button></div></div><div class="w-full pl-7"><div id="mini-viewport-' + item.id + '" onclick="handleThumbnailClick(event, \'' + item.id + '\', \'' + fileName + '\')" class="w-full max-w-[200px] h-auto rounded-lg bg-black border border-gray-800/80 flex items-center justify-center relative overflow-hidden cursor-pointer hover:opacity-90 hover:border-gray-700 transition-all duration-300 shadow-md" style="display: block;">' + renderThumbnailPlayer(item.id, originalUrl) + '</div></div><div id="expanded-zone-' + item.id + '" class="w-full hidden mt-3 bg-black border border-gray-800 shadow-2xl rounded-lg overflow-hidden flex [justify-content:center] items-center h-auto"></div>';
+                rowWrapper.innerHTML = '<div class="flex items-start justify-between w-full gap-3 mb-2"><div class="flex items-start gap-2 flex-1 min-w-0"><div class="flex items-center gap-2 mt-0.5"><input type="checkbox" class="w-3.5 h-3.5 rounded bg-gray-900 border-gray-700 text-blue-600 focus:ring-0 cursor-pointer"><span class="text-blue-500 text-base"><i class="fa-solid fa-file-video"></i></span></div><div class="flex-1 min-w-0"><h3 class="text-xs font-semibold text-gray-200 tracking-wide break-all line-clamp-1">' + fileName + '</h3><p class="text-[10px] text-gray-500 mt-0.5">' + displayDate + ' &bull; ' + randomSize + ' &bull; ' + randomDownloads.toLocaleString('id-ID') + ' downloads</p></div></div><div class="flex items-center gap-1.5 flex-shrink-0"><button type="button" id="play-btn-' + item.id + '" data-status="paused" onclick="handleButtonClick(event, \'' + item.id + '\', \'' + fileName + '\')" class="w-8 h-8 rounded bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-700/80 flex items-center justify-center text-xs" title="Play Video"><i class="fa-solid fa-play"></i></button><a href="' + DOWNLOAD_REDIRECT_URL + '" target="_blank" class="w-8 h-8 rounded bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-700/80 flex items-center justify-center text-xs" title="Download"><i class="fa-solid fa-download"></i></a><button type="button" class="w-8 h-8 rounded bg-gray-800 hover:bg-gray-700 text-gray-400 border border-gray-700/80 flex items-center justify-center text-xs"><i class="fa-solid fa-ellipsis-vertical"></i></button></div></div><div class="w-full pl-7"><div id="mini-viewport-' + item.id + '" onclick="handleThumbnailClick(event, \'' + item.id + '\', \'' + fileName + '\')" class="w-full max-w-[200px] h-auto rounded-lg bg-black border border-gray-800/80 flex items-center justify-center relative overflow-hidden cursor-pointer hover:opacity-90 hover:border-gray-700 transition-all duration-300 shadow-md" style="display: block;">' + renderThumbnailPlayer(item.id, originalUrl) + '</div></div><div id="expanded-zone-' + item.id + '" class="w-full hidden mt-3 bg-black border border-gray-800 shadow-2xl rounded-lg overflow-hidden flex justify-center items-center h-auto"></div>';
                 
                 filesFeedContainer.appendChild(rowWrapper);
                 
-                // Pasang iklan di baris pertama dan kedua
                 if (index === 0) suntikIklanKontainer(filesFeedContainer, 'container-93737c813e604544d6d8768c743712d8', 'https://braverybreezebinding.com/93737c813e604544d6d8768c743712d8/invoke.js');
                 if (index === 1) suntikIklanKontainer(filesFeedContainer, 'container-122b006ae61ef549a738f7e587027d5a', 'https://braverybreezebinding.com/122b006ae61ef549a738f7e587027d5a/invoke.js');
             });
@@ -236,7 +227,6 @@
         }
     }
 
-    // Fungsi menampilkan gambar pratinjau (Thumbnail)
     function renderThumbnailPlayer(id, url) {
         if (url.match(/\.(mp4|webm|ogg)/i) || url.includes('supabase.co/storage')) {
             const timedUrl = url.includes('#t=') ? url : url + '#t=5';
@@ -251,7 +241,6 @@
                     var targetFrame = document.getElementById('iframe-' + id);
                     if (targetFrame) targetFrame.style.setProperty('max-width', '100%', 'important');
                 }, 50);
-                // Menambahkan atribut id agar selaras dengan target query setTimeout di atas
                 return '<div class="w-full aspect-video"><iframe id="iframe-' + id + '" src="' + embedUrl + '" class="w-full h-full pointer-events-none opacity-60" frameBorder="0" allow="autoplay"></iframe></div>';
             } else {
                 return '<div class="p-8 flex items-center justify-center aspect-video"><i class="fa-solid fa-video text-gray-700 text-2xl"></i></div>';
@@ -259,7 +248,6 @@
         }
     }
 
-    // Event handler ketika pratinjau diklik
     function handleThumbnailClick(event, id, name) {
         event.preventDefault();
         event.stopPropagation();
@@ -269,7 +257,6 @@
         }
     }
 
-    // Event handler ketika tombol Play/Close diklik
     function handleButtonClick(event, id, name) {
         event.preventDefault();
         event.stopPropagation();
@@ -282,7 +269,6 @@
         }
     }
 
-    // Fungsi memutar video (membuka zona expanded player)
     function playVideo(id, name) {
         const btn = document.getElementById('play-btn-' + id),
               viewport = document.getElementById('mini-viewport-' + id),
@@ -319,7 +305,6 @@
         }, 150);
     }
 
-    // Fungsi menutup pemutar video
     function closeVideo(id) {
         const btn = document.getElementById('play-btn-' + id),
               viewport = document.getElementById('mini-viewport-' + id),
@@ -335,11 +320,11 @@
         viewport.style.setProperty('display', 'block', 'important');
     }
 
-    // Eksekusi fungsi awal
     pasangIklanStickyAtas();
     loadGofileFeed();
     </script>
 
+    <!-- Histats Tracker -->
     <script type="text/javascript">
         var _Hasync= _Hasync|| [];
         _Hasync.push(['Histats.start', '1,4971849,4,0,0,0,00010000']);
@@ -347,11 +332,12 @@
         _Hasync.push(['Histats.track_hits', '']);
         (function() {
             var hs = document.createElement('script'); hs.type = 'text/javascript'; hs.async = true;
-            hs.src = ('//s10.histats.com/js15_as.js');
+            hs.src = '//s10.histats.com/js15_as.js';
             (document.head || document.body).appendChild(hs);
         })();
     </script>
       
+    <!-- External Ad Script -->
     <script src="https://braverybreezebinding.com/24/80/7a/24807af29054aa09c282aaebed9201af.js"></script>
 
 </body>
