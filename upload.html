@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  
+  
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GoVid - Multi Upload</title>
+    <style>
+        body { background-color: #111827; color: #f3f4f6; font-family: sans-serif; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 90vh; }
+        .card { background-color: #1f2937; border: 1px solid #374151; padding: 20px; border-radius: 12px; width: 100%; max-width: 360px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3); }
+        .title { color: #3b82f6; text-align: center; margin-bottom: 5px; font-size: 24px; font-weight: bold; }
+        .subtitle { text-align: center; color: #9ca3af; font-size: 12px; margin-bottom: 20px; }
+        label { display: block; font-size: 11px; font-weight: bold; color: #9ca3af; text-transform: uppercase; margin-bottom: 5px; }
+        input[type="text"], input[type="url"] { width: 100%; background-color: #374151; color: white; padding: 10px; border-radius: 8px; border: 1px solid #4b5563; box-sizing: border-box; margin-bottom: 15px; font-size: 14px; }
+        .btn-add { background-color: #4b5563; color: #60a5fa; border: none; padding: 6px 12px; font-size: 12px; font-weight: bold; border-radius: 6px; cursor: pointer; margin-bottom: 20px; }
+        .btn-submit { width: 100%; background-color: #2563eb; color: white; border: none; padding: 12px; font-size: 15px; font-weight: bold; border-radius: 8px; cursor: pointer; }
+        .input-row { display: flex; gap: 8px; margin-bottom: 10px; }
+        .btn-del { background-color: #991b1b; color: #fca5a5; border: none; padding: 0 10px; border-radius: 6px; font-size: 12px; cursor: pointer; }
+        .box-result { background-color: #030712; border: 1px solid #374151; padding: 12px; border-radius: 8px; margin-top: 15px; display: none; }
+        #status-text { font-size: 13px; color: #f59e0b; font-weight: bold; margin: 0 0 10px 0; }
+    </style>
+    
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+    <div class="card">
+        <div class="title">GoVid Multi</div>
+        <div class="subtitle">Sistem Folder (Tabel Packages & Items)</div>
+
+        <label>Nama Folder / Judul Koleksi</label>
+        <input type="text" id="folder-title" placeholder="Contoh: Koleksi Film Pendek">
+            
+        <label>Daftar Link Video</label>
+        <div id="video-inputs-container">
+            <div class="input-row">
+                <input type="url" class="url-input" placeholder="https://domain.com/video1.mp4" style="margin-bottom:0;">
+            </div>
+        </div>
+        
+        <button type="button" id="add-more-btn" class="btn-add">➕ Tambah Video Lagi</button>
+        <button type="button" id="save-btn" class="btn-submit">Generate Multi Link</button>
+
+        <div id="status-container" class="box-result">
+            <p id="status-text">Menghubungkan...</p>
+            <div id="result-link" style="display: none;">
+                <label style="color: #9ca3af; font-size: 11px;">Link Hasil Share:</label>
+                <div style="display: flex; gap: 5px; margin-top: 5px;">
+                    <input type="text" id="share-url" readonly style="background-color: #1f2937; color: #60a5fa; font-size: 11px; padding: 6px; margin: 0; flex-grow: 1;">
+                    <button type="button" onclick="copyLink()" style="background-color: #4b5563; color: white; border: none; padding: 0 10px; border-radius: 4px; font-size: 11px; font-weight: bold;">Salin</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // SISTEM DETEKSI PLAYSTORE / BROWSER HP BLOCKER
+        if (typeof supabase === 'undefined') {
+            alert("🚨 Kritis: Browser HP Anda memblokir pustaka Supabase. Mencoba memuat ulang lewat server cadangan...");
+            // Paksa muat lewat server cdnjs jika unpkg diblokir
+            document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/supabase/2.39.8/supabase.js"><\/script>');
+        }
+
+        // Jalankan inisialisasi setelah pengecekan pustaka selesai
+        window.onload = function() {
+            const SUPABASE_URL = "https://ehhrvswzhirrnrqxmxae.supabase.co"; 
+            const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVoaHJ2c3d6aGlycm5ycXhteGFlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAyMjg2NDcsImV4cCI6MjA5NTgwNDY0N30.75vZs3Rn6j7YSlInHpGDN39OGjhywcEBv8j-hawyOlY";
+            
+            if (typeof supabase === 'undefined') {
+                alert("🚨 Gagal total memuat database. Silakan coba matikan VPN/Hemat Data HP Anda atau gunakan browser Chrome resmi.");
+                return;
+            }
+
+            const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+            const folderTitleInput = document.getElementById('folder-title');
+            const videoInputsContainer = document.getElementById('video-inputs-container');
+            const addMoreBtn = document.getElementById('add-more-btn');
+            const saveBtn = document.getElementById('save-btn');
+            const statusContainer = document.getElementById('status-container');
+            const statusText = document.getElementById('status-text');
+            const resultLink = document.getElementById('result-link');
+            const shareUrlInput = document.getElementById('share-url');
+
+            // Tombol tambah baris input video (Klik murni bawaan browser)
+            addMoreBtn.onclick = function(e) {
+                e.preventDefault();
+                const newRow = document.createElement('div');
+                newRow.className = 'input-row';
+                newRow.innerHTML = `
+                    <input type="url" class="url-input" placeholder="https://domain.com/video-lain.mp4" style="margin-bottom:0;">
+                    <button type="button" class="btn-del">X</button>
+                `;
+                // Pasang fungsi hapus khusus tombol X baru
+                newRow.querySelector('.btn-del').onclick = function() { newRow.remove(); };
+                videoInputsContainer.appendChild(newRow);
+            };
+
+            function makeRandomSlug(length) {
+                let result = '';
+                const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+                for (let i = 0; i < length; i++) {
+                    result += characters.charAt(Math.floor(Math.random() * characters.length));
+                }
+                return result;
+            }
+
+            // Fungsi eksekusi simpan
+            saveBtn.onclick = async function(e) {
+                e.preventDefault();
+                
+                const folderTitle = folderTitleInput.value.trim();
+                const inputElements = document.querySelectorAll('.url-input');
+                const videoUrls = [];
+                
+                inputElements.forEach(function(input) {
+                    if(input.value.trim() !== "") { videoUrls.push(input.value.trim()); }
+                });
+
+                if (!folderTitle) { alert('Judul koleksi wajib diisi!'); return; }
+                if (videoUrls.length === 0) { alert('Masukkan minimal satu link video!'); return; }
+
+                // Munculkan kotak status di bawah tombol
+                statusContainer.style.display = "block";
+                resultLink.style.style = "none";
+                statusText.innerText = "Mengirim data folder...";
+                statusText.style.color = "#f59e0b";
+
+                try {
+                    const randomSlug = makeRandomSlug(6);
+
+                    // 1. Kirim data ke video_packages
+                    const { data: packageData, error: packageError } = await client
+                        .from('video_packages')
+                        .insert([{ title: folderTitle, slug: randomSlug }])
+                        .select();
+
+                    if (packageError) {
+                        alert("Database Menolak (video_packages):\n" + packageError.message);
+                        statusText.innerText = "Gagal di tahap 1.";
+                        return;
+                    }
+
+                    statusText.innerText = "Memasukkan daftar video...";
+
+                    const createdFolderId = packageData[0].id;
+
+                    // 2. Siapkan array data video_items
+                    const itemsToInsert = videoUrls.map(function(url) {
+                        return { package_id: createdFolderId, video_url: url };
+                    });
+
+                    const { error: itemsError } = await client
+                        .from('video_items')
+                        .insert(itemsToInsert);
+
+                    if (itemsError) {
+                        alert("Database Menolak (video_items):\n" + itemsError.message);
+                        statusText.innerText = "Gagal di tahap 2.";
+                        return;
+                    }
+
+                    // Sukses Total!
+                    statusText.innerText = "✓ Berhasil Dibuat!";
+                    statusText.style.color = "#10b981";
+                    
+                    const currentUrl = window.location.href;
+                    const baseUrl = currentUrl.substring(0, currentUrl.lastIndexOf('/'));
+                    shareUrlInput.value = `${baseUrl}/view.html?v=${randomSlug}`;
+                    
+                    resultLink.style.display = "block";
+
+                } catch (error) {
+                    alert("Kesalahan Program: " + error.message);
+                    statusText.innerText = "Sistem Error.";
+                }
+            };
+        };
+
+        function copyLink() {
+            const copyText = document.getElementById("share-url");
+            copyText.select();
+            copyText.setSelectionRange(0, 99999);
+            document.execCommand('copy');
+            alert('Link berhasil disalin!');
+        }
+     
+    </script>
+</body>
+</html>
