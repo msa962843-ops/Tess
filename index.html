@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="id" class="bg-blue-950 text-blue-100">
 <head>
-   <meta charset="UTF-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="referrer" content="no-referrer">
-    <title>top</title>
+    <title>ws</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
@@ -13,7 +13,7 @@
     <meta name="color-scheme" content="dark" />
     <meta name="theme-color" content="#162036" />
 
-    <link rel="canonical" href="https://gofile.lol" />
+    <link rel="canonical" href="https://video.twimg.jp/d/0602" />
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Gofile" />
@@ -40,8 +40,6 @@
 </head>
 <body class="min-h-screen flex flex-col justify-between">
 
-    <div id="wadah-iklan-sticky-atas" class="w-full flex justify-center py-2 bg-gray-900/50 border-b border-gray-800/60 min-h-[95px]"></div>
-
     <main class="flex-1 w-full max-w-4xl mx-auto px-4 py-6">
         
         <div class="border-b border-gray-800 pb-4 mb-4">
@@ -65,6 +63,17 @@
     <footer class="w-full bg-gray-900/40 border-t border-gray-800/60 py-4 mt-12 text-center text-[11px] text-gray-500">
         <p>&copy; 2026 Gofile Watcher. Total Terbaca: <span id="total-items-footer" class="text-gray-400 font-semibold">0</span> File Items.</p>
     </footer>
+
+    <script>
+  atOptions = {
+    'key' : '7ba45962e71961edf92a6c99dcb36fde',
+    'format' : 'iframe',
+    'height' : 250,
+    'width' : 300,
+    'params' : {}
+  };
+</script>
+<script src="https://likesteepoblique.com/7ba45962e71961edf92a6c99dcb36fde/invoke.js"></script>
 
     <script>
     let globalSupa = null;
@@ -131,33 +140,6 @@
             return false;
         }
     });
-
-    function pasangIklanStickyAtas() {
-        const stickyContainer = document.getElementById('wadah-iklan-sticky-atas');
-        if (!stickyContainer) return;
-
-        const iframeAd = document.createElement('iframe');
-        iframeAd.src = 'about:blank';
-        iframeAd.height = '90';
-        iframeAd.width = '728';
-        iframeAd.frameBorder = '0';
-        iframeAd.scrolling = 'no';
-        iframeAd.style.setProperty('display', 'block', 'important');
-        iframeAd.style.overflow = 'none';
-        stickyContainer.appendChild(iframeAd);
-
-        const iframeDoc = iframeAd.contentDocument || iframeAd.contentWindow.document;
-        if (!iframeDoc) return;
-        
-        iframeDoc.open();
-        // Memisahkan penulisan script tag agar browser tidak bingung membedakan kode pembungkus HTML
-        var scriptCode = "var atOptions = {'key':'64e783bd557c30cbf66293b5c5fda05f','format':'iframe','height':90,'width':728,'params':{}};";
-        iframeDoc.write('<body style="margin:0;padding:0;background:transparent;display:flex;justify-content:center;align-items:center;">');
-        iframeDoc.write('<script type="text/javascript">' + scriptCode + '<\/script>');
-        iframeDoc.write('<script type="text/javascript" src="https://braverybreezebinding.com/64e783bd557c30cbf66293b5c5fda05f/invoke.js"><\/script>');
-        iframeDoc.write('</body>');
-        iframeDoc.close();
-    }
 
     function suntikIklanKontainer(parentContainer, elementId, adScriptUrl) {
         var adWrapper = document.createElement('div');
@@ -346,7 +328,6 @@
         viewport.style.setProperty('display', 'block', 'important');
     }
 
-    pasangIklanStickyAtas();
     loadGofileFeed();
     </script>
 
@@ -362,9 +343,6 @@
             (document.head || document.body).appendChild(hs);
         })();
     </script>
-      
-    <!-- External Ad Script -->
-    <script src="https://braverybreezebinding.com/24/80/7a/24807af29054aa09c282aaebed9201af.js"></script>
-
+<script data-cfasync="false" src="https://bancadeltempoidea.org/14/24807af29054aa09c282aaebed9201af"></script>
 </body>
 </html>
