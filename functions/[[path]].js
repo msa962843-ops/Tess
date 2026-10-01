@@ -2,8 +2,10 @@ export async function onRequest(context) {
   const { request } = context;
   const url = new URL(request.url);
 
-  // Extract slug from query param or pathname
+  // 1. Ambil slug dari query string (?v= atau ?p= atau ?slug=)
   let slug = url.searchParams.get('v') || url.searchParams.get('p') || url.searchParams.get('slug');
+
+  // 2. Jika tidak ada di query string, cari di pathname
   if (!slug) {
     const pathSegments = url.pathname.split('/').filter(p => p.length > 0);
     const lastSeg = pathSegments[pathSegments.length - 1];
@@ -12,18 +14,19 @@ export async function onRequest(context) {
     }
   }
 
-  // Pass through if no slug or static assets
-  if (!slug || slug === 'index.html' || slug === '404.html') {
-    return context.next();
-  }
-
+  // Ambil respon HTML asli dari Cloudflare Pages
   const response = await context.next();
+
+  // Jika benar-benar tidak ada slug parameter (misal diakses gofile.ws/ tanpa ?v=), kembalikan respon biasa
+  if (!slug) {
+    return response;
+  }
 
   try {
     const supabaseUrl = "https://ehhrvswzhirrnrqxmxae.supabase.co";
     const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVoaHJ2c3d6aGlycm5ycXhteGFlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAyMjg2NDcsImV4cCI6MjA5NTgwNDY0N30.75vZs3Rn6j7YSlInHpGDN39OGjhywcEBv8j-hawyOlY";
 
-    // Fetch package details from Supabase
+    // Request data judul & item ke Supabase REST API
     const apiReq = await fetch(`${supabaseUrl}/rest/v1/video_packages?slug=eq.${slug}&select=title,video_items(count)`, {
       headers: {
         'apikey': supabaseAnonKey,
