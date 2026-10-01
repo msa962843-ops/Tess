@@ -2,22 +2,22 @@ export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
 
-    // 1. Ambil slug dari query string (?v= / ?p= / ?slug=)
+    // 1. Cek parameter query (?v= / ?p= / ?slug=)
     let slug = url.searchParams.get('v') || url.searchParams.get('p') || url.searchParams.get('slug');
 
-    // 2. Ekstraksi slug jika formatnya pathname
+    // 2. Jika tidak ada di query, ambil dari pathname (contoh: gofile.ws/slug-anda)
     if (!slug) {
       const pathSegments = url.pathname.split('/').filter(p => p.length > 0);
       const lastSeg = pathSegments[pathSegments.length - 1];
-      if (lastSeg && !['index.html', '404.html', 'upload.html', 'view.html'].includes(lastSeg)) {
+      if (lastSeg && !['index.html', '404.html', 'upload.html', 'view.html', 'config.js', 'index.js'].includes(lastSeg)) {
         slug = lastSeg;
       }
     }
 
-    // Ambil asset statis asli (index.html)
+    // Ambil file HTML asli dari aset
     const response = await env.ASSETS.fetch(request);
 
-    // Jika tidak ada slug, kembalikan halaman biasa
+    // Jika tidak ada slug, kembalikan respon biasa
     if (!slug) {
       return response;
     }
@@ -26,7 +26,7 @@ export default {
       const supabaseUrl = "https://ehhrvswzhirrnrqxmxae.supabase.co";
       const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVoaHJ2c3d6aGlycm5ycXhteGFlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAyMjg2NDcsImV4cCI6MjA5NTgwNDY0N30.75vZs3Rn6j7YSlInHpGDN39OGjhywcEBv8j-hawyOlY";
 
-      // Request data ke Supabase REST API
+      // Panggil Supabase REST API
       const apiReq = await fetch(`${supabaseUrl}/rest/v1/video_packages?slug=eq.${slug}&select=title,video_items(count)`, {
         headers: {
           'apikey': supabaseAnonKey,
@@ -44,7 +44,7 @@ export default {
           const pageTitle = `${folderTitle} · Gofile`;
           const pageDesc = `${fileCount} files shared with Gofile`;
 
-          // Ganti / Sisipkan meta tag dengan HTMLRewriter
+          // Injeksi meta tag ke HTML secara On-The-Fly
           return new HTMLRewriter()
             .on('title', { element(e) { e.setInnerContent(pageTitle); } })
             .on('meta[property="og:title"]', { element(e) { e.setAttribute('content', pageTitle); } })
