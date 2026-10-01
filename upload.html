@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  
-  
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GoVid - Multi Upload</title>
@@ -13,10 +11,10 @@
         .subtitle { text-align: center; color: #9ca3af; font-size: 12px; margin-bottom: 20px; }
         label { display: block; font-size: 11px; font-weight: bold; color: #9ca3af; text-transform: uppercase; margin-bottom: 5px; }
         input[type="text"], input[type="url"] { width: 100%; background-color: #374151; color: white; padding: 10px; border-radius: 8px; border: 1px solid #4b5563; box-sizing: border-box; margin-bottom: 15px; font-size: 14px; }
-        .btn-add { background-color: #4b5563; color: #60a5fa; border: none; padding: 6px 12px; font-size: 12px; font-weight: bold; border-radius: 6px; cursor: pointer; margin-bottom: 20px; }
+        .btn-add { background-color: #4b5563; color: #60a5fa; border: none; padding: 8px 12px; font-size: 12px; font-weight: bold; border-radius: 6px; cursor: pointer; margin-bottom: 20px; width: 100%; }
         .btn-submit { width: 100%; background-color: #2563eb; color: white; border: none; padding: 12px; font-size: 15px; font-weight: bold; border-radius: 8px; cursor: pointer; }
         .input-row { display: flex; gap: 8px; margin-bottom: 10px; }
-        .btn-del { background-color: #991b1b; color: #fca5a5; border: none; padding: 0 10px; border-radius: 6px; font-size: 12px; cursor: pointer; }
+        .btn-del { background-color: #991b1b; color: #fca5a5; border: none; padding: 0 12px; border-radius: 6px; font-size: 12px; cursor: pointer; font-weight: bold; }
         .box-result { background-color: #030712; border: 1px solid #374151; padding: 12px; border-radius: 8px; margin-top: 15px; display: none; }
         #status-text { font-size: 13px; color: #f59e0b; font-weight: bold; margin: 0 0 10px 0; }
     </style>
@@ -55,20 +53,17 @@
     </div>
 
     <script>
-        // SISTEM DETEKSI PLAYSTORE / BROWSER HP BLOCKER
+        // Fallback CDN jika browser memblokir unpkg
         if (typeof supabase === 'undefined') {
-            alert("🚨 Kritis: Browser HP Anda memblokir pustaka Supabase. Mencoba memuat ulang lewat server cadangan...");
-            // Paksa muat lewat server cdnjs jika unpkg diblokir
             document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/supabase/2.39.8/supabase.js"><\/script>');
         }
 
-        // Jalankan inisialisasi setelah pengecekan pustaka selesai
         window.onload = function() {
             const SUPABASE_URL = "https://ehhrvswzhirrnrqxmxae.supabase.co"; 
             const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVoaHJ2c3d6aGlycm5ycXhteGFlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAyMjg2NDcsImV4cCI6MjA5NTgwNDY0N30.75vZs3Rn6j7YSlInHpGDN39OGjhywcEBv8j-hawyOlY";
             
             if (typeof supabase === 'undefined') {
-                alert("🚨 Gagal total memuat database. Silakan coba matikan VPN/Hemat Data HP Anda atau gunakan browser Chrome resmi.");
+                alert("🚨 Gagal memuat database. Pastikan koneksi internet stabil.");
                 return;
             }
 
@@ -83,7 +78,7 @@
             const resultLink = document.getElementById('result-link');
             const shareUrlInput = document.getElementById('share-url');
 
-            // Tombol tambah baris input video (Klik murni bawaan browser)
+            // Tambah baris input link
             addMoreBtn.onclick = function(e) {
                 e.preventDefault();
                 const newRow = document.createElement('div');
@@ -92,7 +87,6 @@
                     <input type="url" class="url-input" placeholder="https://domain.com/video-lain.mp4" style="margin-bottom:0;">
                     <button type="button" class="btn-del">X</button>
                 `;
-                // Pasang fungsi hapus khusus tombol X baru
                 newRow.querySelector('.btn-del').onclick = function() { newRow.remove(); };
                 videoInputsContainer.appendChild(newRow);
             };
@@ -106,7 +100,7 @@
                 return result;
             }
 
-            // Fungsi eksekusi simpan
+            // Simpan data
             saveBtn.onclick = async function(e) {
                 e.preventDefault();
                 
@@ -121,23 +115,22 @@
                 if (!folderTitle) { alert('Judul koleksi wajib diisi!'); return; }
                 if (videoUrls.length === 0) { alert('Masukkan minimal satu link video!'); return; }
 
-                // Munculkan kotak status di bawah tombol
                 statusContainer.style.display = "block";
-                resultLink.style.style = "none";
+                resultLink.style.display = "none";
                 statusText.innerText = "Mengirim data folder...";
                 statusText.style.color = "#f59e0b";
 
                 try {
                     const randomSlug = makeRandomSlug(6);
 
-                    // 1. Kirim data ke video_packages
+                    // 1. Simpan folder baru ke video_packages
                     const { data: packageData, error: packageError } = await client
                         .from('video_packages')
                         .insert([{ title: folderTitle, slug: randomSlug }])
                         .select();
 
                     if (packageError) {
-                        alert("Database Menolak (video_packages):\n" + packageError.message);
+                        alert("Gagal menyimpan folder:\n" + packageError.message);
                         statusText.innerText = "Gagal di tahap 1.";
                         return;
                     }
@@ -146,7 +139,7 @@
 
                     const createdFolderId = packageData[0].id;
 
-                    // 2. Siapkan array data video_items
+                    // 2. Simpan daftar video ke video_items
                     const itemsToInsert = videoUrls.map(function(url) {
                         return { package_id: createdFolderId, video_url: url };
                     });
@@ -156,23 +149,25 @@
                         .insert(itemsToInsert);
 
                     if (itemsError) {
-                        alert("Database Menolak (video_items):\n" + itemsError.message);
+                        alert("Gagal menyimpan item video:\n" + itemsError.message);
                         statusText.innerText = "Gagal di tahap 2.";
                         return;
                     }
 
-                    // Sukses Total!
+                    // Selesai!
                     statusText.innerText = "✓ Berhasil Dibuat!";
                     statusText.style.color = "#10b981";
                     
                     const currentUrl = window.location.href;
                     const baseUrl = currentUrl.substring(0, currentUrl.lastIndexOf('/'));
-                    shareUrlInput.value = `${baseUrl}/view.html?v=${randomSlug}`;
+                    
+                    // Format link yang akan mengaktifkan Cloudflare Function & OG Meta Tags
+                    shareUrlInput.value = `${baseUrl}/index.html?v=${randomSlug}`;
                     
                     resultLink.style.display = "block";
 
                 } catch (error) {
-                    alert("Kesalahan Program: " + error.message);
+                    alert("Sistem Error: " + error.message);
                     statusText.innerText = "Sistem Error.";
                 }
             };
@@ -185,7 +180,6 @@
             document.execCommand('copy');
             alert('Link berhasil disalin!');
         }
-     
     </script>
 </body>
 </html>
