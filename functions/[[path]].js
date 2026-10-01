@@ -2,26 +2,28 @@ export async function onRequest(context) {
   const { request } = context;
   const url = new URL(request.url);
 
-  // Ambil kode slug/ID dari query parameter ?p= / ?v= atau dari URL path
-  let slug = url.searchParams.get('p') || url.searchParams.get('v');
+  // Extract slug from query param or pathname
+  let slug = url.searchParams.get('v') || url.searchParams.get('p') || url.searchParams.get('slug');
   if (!slug) {
-    const pathParts = url.pathname.split('/').filter(p => p.length > 0);
-    slug = pathParts[pathParts.length - 1];
+    const pathSegments = url.pathname.split('/').filter(p => p.length > 0);
+    const lastSeg = pathSegments[pathSegments.length - 1];
+    if (lastSeg && !['index.html', '404.html', 'upload.html', 'view.html'].includes(lastSeg)) {
+      slug = lastSeg;
+    }
   }
 
-  // Ambil halaman asli dari Cloudflare Pages
+  // Pass through if no slug or static assets
+  if (!slug || slug === 'index.html' || slug === '404.html') {
+    return context.next();
+  }
+
   const response = await context.next();
-
-  // Jika diakses tanpa slug folder (misal halaman utama), kembalikan respon biasa
-  if (!slug || slug === 'view.html' || slug === 'index.html' || slug === 'upload.html') {
-    return response;
-  }
 
   try {
     const supabaseUrl = "https://ehhrvswzhirrnrqxmxae.supabase.co";
     const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVoaHJ2c3d6aGlycm5ycXhteGFlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAyMjg2NDcsImV4cCI6MjA5NTgwNDY0N30.75vZs3Rn6j7YSlInHpGDN39OGjhywcEBv8j-hawyOlY";
 
-    // Minta data judul folder & jumlah video dari Supabase REST API
+    // Fetch package details from Supabase
     const apiReq = await fetch(`${supabaseUrl}/rest/v1/video_packages?slug=eq.${slug}&select=title,video_items(count)`, {
       headers: {
         'apikey': supabaseAnonKey,
@@ -32,26 +34,22 @@ export async function onRequest(context) {
     const data = await apiReq.json();
 
     if (data && data.length > 0) {
-      const folderTitle = data[0].title || 'Root';
+      const folderTitle = data[0].title || 'root';
       const fileCount = data[0].video_items ? data[0].video_items[0].count : 0;
 
-      const ogTitle = `${folderTitle} · Gofile`;
-      const ogDesc = `${fileCount} files shared with Gofile`;
+      const pageTitle = `${folderTitle} · Gofile`;
+      const pageDesc = `${fileCount} files shared with Gofile`;
 
-      // Transformasi HTML untuk menyuntikkan meta tag saat di-crawl WhatsApp/Telegram/X
       return new HTMLRewriter()
-        .on('title', { element(e) { e.setInnerContent(ogTitle); } })
-        .on('head', {
+        .on('title', {
           element(e) {
-            e.append(`<meta property="og:title" content="${ogTitle}" />`, { html: true });
-            e.append(`<meta property="og:description" content="${ogDesc}" />`, { html: true });
-            e.append(`<meta property="og:site_name" content="Gofile" />`, { html: true });
-            e.append(`<meta property="og:type" content="website" />`, { html: true });
-            e.append(`<meta name="twitter:card" content="summary" />`, { html: true });
-            e.append(`<meta name="twitter:title" content="${ogTitle}" />`, { html: true });
-            e.append(`<meta name="twitter:description" content="${ogDesc}" />`, { html: true });
+            e.setInnerContent(pageTitle);
           }
         })
+        .on('meta[property="og:title"]', { element(e) { e.setAttribute('content', pageTitle); } })
+        .on('meta[property="og:description"]', { element(e) { e.setAttribute('content', pageDesc); } })
+        .on('meta[name="twitter:title"]', { element(e) { e.setAttribute('content', pageTitle); } })
+        .on('meta[name="twitter:description"]', { element(e) { e.setAttribute('content', pageDesc); } })
         .transform(response);
     }
   } catch (err) {
