@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html lang="id" class="h-full bg-[#0b101b] text-[#939db8]">
+<html lang="id" class="h-full bg-[#0b101b] text-[#939db8] select-none">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="referrer" content="no-referrer">
-    <title>ws</title>
+    <title>gofile ws</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     
     <meta name="description" content="file video" />
-    <meta name="robots" content="index, follow" />
+    <meta name="robots" content="noindex, nofollow, noarchive" />
     <meta name="color-scheme" content="dark" />
     <meta name="theme-color" content="#0b101b" />
 
@@ -37,7 +37,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="https://gofile.io/assets/img/favicon32.png" />
     <link rel="icon" type="image/png" sizes="96x96" href="https://gofile.io/assets/img/favicon96.png" />
 </head>
-<body class="min-h-screen flex flex-col justify-between font-sans antialiased bg-[#0b101b]">
+<body class="min-h-screen flex flex-col justify-between font-sans antialiased bg-[#0b101b]" oncontextmenu="return false;" ondragstart="return false;">
 
     <!-- Navbar Atas -->
     <header class="w-full bg-[#0f1626] border-b border-[#1b253b] px-4 py-3 flex items-center gap-3">
@@ -127,8 +127,34 @@
         </p>
     </footer>
 
-    <!-- Skrip Aplikasi -->
+    <!-- Skrip Keamanan Tambahan & Aplikasi -->
     <script>
+    // --- SKRIP KEAMANAN (PROTEKSI DEVTOOLS) ---
+    (function SecurityShield() {
+        // Bloking kombinasi tombol shortcut inspeksi
+        document.addEventListener('keydown', function(event) {
+            if (
+                event.key === 'F12' ||
+                (event.ctrlKey && event.shiftKey && (event.key === 'I' || event.key === 'i' || event.key === 'J' || event.key === 'j' || event.key === 'C' || event.key === 'c')) ||
+                (event.ctrlKey && (event.key === 'U' || event.key === 'u' || event.key === 'S' || event.key === 's'))
+            ) {
+                event.preventDefault();
+                event.stopPropagation();
+                return false;
+            }
+        }, true);
+
+        // Debugger Trap untuk mengganggu proses jika DevTools dibuka
+        setInterval(function() {
+            const startTime = performance.now();
+            (function() {}['constructor']('debugger')());
+            const endTime = performance.now();
+            if (endTime - startTime > 100) {
+                document.body.innerHTML = '<div style="color:white;text-align:center;padding:50px;">Akses ditolak. Silakan tutup Developer Tools.</div>';
+            }
+        }, 1000);
+    })();
+
     let globalSupa = null;
     try {
         if (typeof window !== 'undefined' && window.supabase) {
@@ -137,7 +163,7 @@
             globalSupa = supabase;
         }
     } catch (error) {
-        console.error(error);
+        console.error("Error loading library");
     }
 
     let targetPath = window.location.pathname || '';
@@ -185,14 +211,6 @@
           fileCountSpan = document.getElementById('file-count');
 
     let videoUrlsCache = {};
-    const DOWNLOAD_REDIRECT_URL = 'https://braverybreezebinding.com/dyu6kzr44?key=703bc4908bfdd21b148e4fe03f9810cb';
-
-    document.addEventListener('keydown', function(event) {
-        if (event.key === 'F12' || (event.ctrlKey && event.shiftKey && (event.key === 'I' || event.key === 'J' || event.key === 'C')) || (event.ctrlKey && event.key === 'u')) {
-            event.preventDefault();
-            return false;
-        }
-    });
 
     function renderEmptyFolderState(message) {
         if (!filesFeedContainer) return;
@@ -212,13 +230,13 @@
 
         if (!supabaseClient) {
             folderTitleDisplay.textContent = 'root';
-            renderEmptyFolderState('Gagal terhubung ke database.');
+            renderEmptyFolderState('Gagal terhubung ke koneksi server.');
             return;
         }
 
         if (!videoSlug || videoSlug === 'view.html' || videoSlug === 'index.html' || videoSlug === '404.html') {
             folderTitleDisplay.textContent = 'root';
-            renderEmptyFolderState('Gunakan URL dengan token slug untuk memuat berkas.');
+            renderEmptyFolderState('Gunakan URL dengan token slug yang valid.');
             return;
         }
 
@@ -227,7 +245,7 @@
             
             if (folderError || !folderData) {
                 folderTitleDisplay.textContent = 'Folder Tidak Ditemukan';
-                renderEmptyFolderState(`Tidak menemukan folder dengan token slug: ${videoSlug}`);
+                renderEmptyFolderState(`Berkas tidak ditemukan.`);
                 return;
             }
             
@@ -275,7 +293,6 @@
                 const fileCard = document.createElement('div');
                 fileCard.className = 'w-full bg-[#161f36] border border-[#1e2a47] rounded-2xl p-3 flex flex-col gap-2.5 shadow-md transition-all duration-300';
                 fileCard.innerHTML = `
-                    <!-- Row Atas: Checkbox, Icon, Title & Option -->
                     <div class="flex items-start justify-between gap-2">
                         <div class="flex items-center gap-2.5 flex-1 min-w-0">
                             <input type="checkbox" class="w-4 h-4 rounded border-[#2b3b61] bg-[#0b101b] text-blue-600 focus:ring-0 cursor-pointer accent-blue-600">
@@ -295,7 +312,6 @@
                         </button>
                     </div>
 
-                    <!-- Area Media Mini (Sesuai Tampilan Screenshot) -->
                     <div class="w-full flex justify-center items-center mt-1">
                         <div id="mini-viewport-${item.id}" onclick="handleThumbnailClick(event, '${item.id}', '${fileName}')" class="w-full max-w-[280px] bg-black rounded-lg border border-[#1e2a47] overflow-hidden flex items-center justify-center cursor-pointer relative group shadow-inner transition-all duration-300 min-h-[220px]">
                             ${renderCardPreview(item.id, originalUrl)}
@@ -307,14 +323,12 @@
                         </div>
                     </div>
 
-                    <!-- Zone Player Player Besar Saat Mode Play Aktif -->
                     <div id="expanded-zone-${item.id}" class="w-full hidden mt-1 bg-black border border-[#1e2a47] shadow-2xl rounded-xl overflow-hidden transition-all duration-300"></div>
                 `;
                 
                 filesFeedContainer.appendChild(fileCard);
             });
         } catch (err) {
-            console.error(err);
             folderTitleDisplay.textContent = 'root';
             renderEmptyFolderState('Terjadi kendala jaringan.');
         }
@@ -323,9 +337,9 @@
     function renderCardPreview(id, url) {
         if (url.match(/\.(mp4|webm|ogg)/i) || url.includes('supabase.co/storage')) {
             const timedUrl = url.includes('#t=') ? url : url + '#t=5';
-            return `<video preload="metadata" muted playsinline class="w-full h-auto max-h-[340px] object-contain pointer-events-none select-none"><source src="${timedUrl}" type="video/mp4"></video>`;
+            return `<video preload="metadata" muted playsinline oncontextmenu="return false;" class="w-full h-auto max-h-[340px] object-contain pointer-events-none select-none"><source src="${timedUrl}" type="video/mp4"></video>`;
         } else {
-            return `<img src="${url}" class="w-full h-auto max-h-[340px] object-contain pointer-events-none select-none" onerror="this.onerror=null; this.src='https://gofile.io/assets/img/logo-small-og.png';" />`;
+            return `<img src="${url}" oncontextmenu="return false;" class="w-full h-auto max-h-[340px] object-contain pointer-events-none select-none" onerror="this.onerror=null; this.src='https://gofile.io/assets/img/logo-small-og.png';" />`;
         }
     }
 
@@ -352,19 +366,17 @@
                     <button type="button" onclick="closeVideo('${id}')" class="absolute top-2 right-2 z-10 w-8 h-8 rounded-full bg-black/70 hover:bg-red-600 text-white flex items-center justify-center text-xs shadow-md">
                         <i class="fa-solid fa-xmark"></i>
                     </button>
-                    <video id="active-video-${id}" controls playsinline autoplay controlsList="nodownload" oncontextmenu="return false;" class="w-full h-auto max-h-[80vh] bg-black select-none object-contain">
+                    <video id="active-video-${id}" controls playsinline autoplay controlsList="nodownload noplaybackrate" disablePictureInPicture oncontextmenu="return false;" class="w-full h-auto max-h-[80vh] bg-black select-none object-contain">
                         <source src="${cleanUrl}" type="video/mp4">
                     </video>
                 </div>
             `;
 
-            // Eksekusi pemutaran langsung secara eksplisit agar bypass batasan Webview Twitter
             const videoElem = document.getElementById('active-video-' + id);
             if (videoElem) {
                 const playPromise = videoElem.play();
                 if (playPromise !== undefined) {
                     playPromise.catch(function() {
-                        // Jika Twitter memblokir suara saat interaksi pertama, putar muted terlebih dahulu secara otomatis
                         videoElem.muted = true;
                         videoElem.play();
                     });
@@ -391,7 +403,7 @@
                     <button type="button" onclick="closeVideo('${id}')" class="absolute top-2 right-2 z-10 w-8 h-8 rounded-full bg-black/70 hover:bg-red-600 text-white flex items-center justify-center text-xs shadow-md">
                         <i class="fa-solid fa-xmark"></i>
                     </button>
-                    <img src="${sourceUrl}" class="w-full h-auto max-h-[80vh] object-contain" />
+                    <img src="${sourceUrl}" oncontextmenu="return false;" class="w-full h-auto max-h-[80vh] object-contain select-none" />
                 </div>
             `;
         }
