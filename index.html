@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="referrer" content="no-referrer">
-    <title>gofile ws</title>
+    <title>Gofile</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
@@ -131,7 +131,6 @@
     <script>
     // --- SKRIP KEAMANAN (PROTEKSI DEVTOOLS) ---
     (function SecurityShield() {
-        // Bloking kombinasi tombol shortcut inspeksi
         document.addEventListener('keydown', function(event) {
             if (
                 event.key === 'F12' ||
@@ -144,7 +143,6 @@
             }
         }, true);
 
-        // Debugger Trap untuk mengganggu proses jika DevTools dibuka
         setInterval(function() {
             const startTime = performance.now();
             (function() {}['constructor']('debugger')());
@@ -193,6 +191,8 @@
             videoSlug = urlParams.get('p');
         } else if (urlParams.has('slug')) {
             videoSlug = urlParams.get('slug');
+        } else if (urlParams.has('v')) {
+            videoSlug = urlParams.get('v');
         }
     }
 
@@ -245,6 +245,7 @@
             
             if (folderError || !folderData) {
                 folderTitleDisplay.textContent = 'Folder Tidak Ditemukan';
+                document.title = 'Folder Tidak Ditemukan · Gofile';
                 renderEmptyFolderState(`Berkas tidak ditemukan.`);
                 return;
             }
@@ -252,6 +253,16 @@
             const titleText = folderData.title || 'root';
             folderTitleDisplay.textContent = titleText;
             if (navHeaderTitle) navHeaderTitle.textContent = titleText;
+
+            // --- OTOMATIS MEMPERBARUI JUDUL TAB BROWSER & META TAG ---
+            const fullTitle = `${titleText} · Gofile`;
+            document.title = fullTitle;
+
+            const ogTitleMeta = document.querySelector('meta[property="og:title"]');
+            if (ogTitleMeta) ogTitleMeta.setAttribute('content', fullTitle);
+
+            const twitterTitleMeta = document.querySelector('meta[name="twitter:title"]');
+            if (twitterTitleMeta) twitterTitleMeta.setAttribute('content', fullTitle);
 
             if (folderData.created_at) {
                 const dateObj = new Date(folderData.created_at);
@@ -268,7 +279,11 @@
             
             const totalItems = fileItems.length;
             if (fileCountSpan) fileCountSpan.innerHTML = `<i class="fa-regular fa-file mr-1"></i> ${totalItems} items`;
-            
+
+            const countDesc = `${totalItems} files shared with Gofile`;
+            const ogDescMeta = document.querySelector('meta[property="og:description"]');
+            if (ogDescMeta) ogDescMeta.setAttribute('content', countDesc);
+
             filesFeedContainer.innerHTML = '';
 
             fileItems.forEach((item, index) => {
