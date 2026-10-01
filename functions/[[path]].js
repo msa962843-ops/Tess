@@ -2,10 +2,9 @@ export async function onRequest(context) {
   const { request } = context;
   const url = new URL(request.url);
 
-  // 1. Ekstraksi slug dari query string (?v= atau ?p= atau ?slug=)
+  // 1. Ambil slug dari query parameter (?v=)
   let slug = url.searchParams.get('v') || url.searchParams.get('p') || url.searchParams.get('slug');
 
-  // 2. Jika tidak ada di query string, cari dari pathname
   if (!slug) {
     const pathSegments = url.pathname.split('/').filter(p => p.length > 0);
     const lastSeg = pathSegments[pathSegments.length - 1];
@@ -14,7 +13,6 @@ export async function onRequest(context) {
     }
   }
 
-  // Jika tidak ada slug sama sekali, langsung teruskan respon standar
   if (!slug) {
     return context.next();
   }
@@ -23,7 +21,7 @@ export async function onRequest(context) {
     const supabaseUrl = "https://ehhrvswzhirrnrqxmxae.supabase.co";
     const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVoaHJ2c3d6aGlycm5ycXhteGFlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAyMjg2NDcsImV4cCI6MjA5NTgwNDY0N30.75vZs3Rn6j7YSlInHpGDN39OGjhywcEBv8j-hawyOlY";
 
-    // Request data folder dari Supabase terlebih dahulu
+    // Request data dari Supabase
     const apiReq = await fetch(`${supabaseUrl}/rest/v1/video_packages?slug=eq.${slug}&select=title,video_items(count)`, {
       headers: {
         'apikey': supabaseAnonKey,
@@ -41,21 +39,30 @@ export async function onRequest(context) {
         const pageTitle = `${folderTitle} · Gofile`;
         const pageDesc = `${fileCount} files shared with Gofile`;
 
-        // Ambil respon HTML dari Cloudflare
         const response = await context.next();
 
-        // Ganti meta tag sebelum HTML dikirim ke browser/bot
+        // Menyisipkan/mengubah meta tag secara pasti di <head>
         return new HTMLRewriter()
-          .on('title', { element(e) { e.setInnerContent(pageTitle); } })
-          .on('meta[property="og:title"]', { element(e) { e.setAttribute('content', pageTitle); } })
-          .on('meta[property="og:description"]', { element(e) { e.setAttribute('content', pageDesc); } })
-          .on('meta[name="twitter:title"]', { element(e) { e.setAttribute('content', pageTitle); } })
-          .on('meta[name="twitter:description"]', { element(e) { e.setAttribute('content', pageDesc); } })
+          .on('title', {
+            element(e) {
+              e.setInnerContent(pageTitle);
+            }
+          })
+          .on('head', {
+            element(e) {
+              // Menyisipkan tag OG secara langsung ke dalam <head>
+              e.append(`
+                <meta property="og:title" content="${pageTitle}" />
+                <meta property="og:description" content="${pageDesc}" />
+                <meta name="twitter:title" content="${pageTitle}" />
+                <meta name="twitter:description" content="${pageDesc}" />
+              `, { html: true });
+            }
+          })
           .transform(response);
       }
     }
   } catch (err) {
-    // Jika gagal fetch Supabase, kembalikan halaman biasa
     return context.next();
   }
 
